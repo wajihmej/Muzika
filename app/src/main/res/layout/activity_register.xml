@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Register">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="148dp"
+        tools:layout_editor_absoluteY="136dp"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="30dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/logoapp" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+
+        <EditText
+            android:id="@+id/editTextTextPersonName2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Name"
+            android:inputType="textPersonName"
+            android:layout_marginLeft="40sp"
+            android:layout_marginRight="40sp"
+            />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <EditText
+            android:id="@+id/editTextTextPersonName3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Username"
+            android:inputType="textPersonName"
+            android:layout_marginLeft="40sp"
+            android:layout_marginRight="40sp"
+            />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <EditText
+            android:id="@+id/editTextTextEmailAddress2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:layout_marginLeft="40sp"
+            android:layout_marginRight="40sp"
+            />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <EditText
+            android:id="@+id/editTextPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Phone number"
+            android:inputType="phone"
+            android:layout_marginLeft="40sp"
+            android:layout_marginRight="40sp"
+            />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <EditText
+            android:id="@+id/editTextTextPassword2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:layout_marginLeft="40sp"
+            android:layout_marginRight="40sp"
+            />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <Button
+            android:id="@+id/registerb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register"
+            android:layout_marginLeft="40sp"
+            android:layout_marginRight="40sp"
+            />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
