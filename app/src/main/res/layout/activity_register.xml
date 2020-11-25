@@ -13,6 +13,11 @@
         tools:layout_editor_absoluteX="148dp"
         tools:layout_editor_absoluteY="136dp"
         >
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="100dp" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -49,20 +54,6 @@
             android:layout_marginRight="40sp"
             />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-
-        <EditText
-            android:id="@+id/editTextTextPersonName3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Username"
-            android:inputType="textPersonName"
-            android:layout_marginLeft="40sp"
-            android:layout_marginRight="40sp"
-            />
         <Space
             android:layout_width="match_parent"
             android:layout_height="20dp" />
@@ -107,7 +98,7 @@
             />
         <Space
             android:layout_width="match_parent"
-            android:layout_height="20dp" />
+            android:layout_height="50dp" />
 
         <Button
             android:id="@+id/registerb"
