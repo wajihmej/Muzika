@@ -84,6 +84,20 @@
       app:layout_constraintTop_toBottomOf="@+id/password"
       />
 
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:text="Have no account yet ?"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginbutton"
+        android:layout_marginLeft="40sp"
+        android:layout_marginRight="40sp"
+        android:textAlignment="center"
+        />
   <Button
       android:id="@+id/registerbutton"
       android:layout_width="match_parent"
@@ -97,19 +111,5 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
-  <TextView
-      android:id="@+id/textView3"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="25dp"
-      android:text="Have no account yet ?"
-      android:textSize="18sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/loginbutton"
-      android:layout_marginLeft="40sp"
-      android:layout_marginRight="40sp"
-      android:textAlignment="center"
-      />
 </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
