@@ -8,20 +8,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
-import com.codepath.asynchttpclient.callback.TextHttpResponseHandler;
+import com.google.android.material.textfield.TextInputEditText;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import okhttp3.Headers;
+import tn.example.muzika.models.user;
 
 public class Login extends AppCompatActivity {
 
     Button Register,Login;
+    EditText username,password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,9 @@ public class Login extends AppCompatActivity {
 
         Login = findViewById(R.id.loginbutton);
         Register = findViewById(R.id.registerbutton);
+
+        username = (EditText)findViewById(R.id.userName);
+        password = (EditText)findViewById(R.id.password);
 
         Register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,13 +47,8 @@ public class Login extends AppCompatActivity {
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-                login();
-
-                Intent intent =  new Intent(Login.this,HomePage.class);
-                startActivity(intent);
-                finish();
+                Intent intent = new Intent(Login.this, HomePage.class);
+                user loggedUser = login(intent);
             }
         });
 
@@ -78,24 +79,22 @@ public class Login extends AppCompatActivity {
         super.onDestroy();
     }
 
-    void login()
+    user login(Intent intent)
     {
         AsyncHttpClient client = new AsyncHttpClient();
+        final user[] loggedUser = new user[1];
         client.post("https://nameless-cliffs-25074.herokuapp.com/api/auth/signin",
-                "{\"username\" : \"firaspop\",\n" +
-                        "    \"password\" : \"123456789\"}"
+                "{\"username\" : \""+username.getText().toString()+"\",\n" +
+                        "    \"password\" : \""+password.getText().toString()+"\"}"
                 , new JsonHttpResponseHandler() {
 
 
                     @Override
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
-                        try {
-                            JSONArray userJson = json.jsonObject.getJSONArray("");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        Log.d("DEBUG", json.toString());
+                        JSONObject userJson = json.jsonObject;
+                        loggedUser[0] = user.fromJson(userJson);
+                        Log.d("Json" , loggedUser[0].toString());
+                        startActivity(intent);
                     }
 
 
@@ -105,6 +104,7 @@ public class Login extends AppCompatActivity {
                 Log.d("DEBUG", errorResponse);
             }
         });
+        return loggedUser[0];
     }
 
 }
