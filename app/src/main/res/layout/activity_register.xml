@@ -40,22 +40,7 @@
             android:layout_height="50dp" />
 
         <EditText
-            android:id="@+id/editTextTextPersonName2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Name"
-            android:inputType="textPersonName"
-            android:layout_marginLeft="40sp"
-            android:layout_marginRight="40sp"
-            />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-
-        <EditText
-            android:id="@+id/editTextTextPersonName3"
+            android:id="@+id/usernamereg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -69,7 +54,7 @@
             android:layout_height="20dp" />
 
         <EditText
-            android:id="@+id/editTextTextEmailAddress2"
+            android:id="@+id/emailreg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -83,7 +68,7 @@
             android:layout_height="20dp" />
 
         <EditText
-            android:id="@+id/editTextPhone"
+            android:id="@+id/telreg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -97,7 +82,7 @@
             android:layout_height="20dp" />
 
         <EditText
-            android:id="@+id/editTextTextPassword2"
+            android:id="@+id/passwordreg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
