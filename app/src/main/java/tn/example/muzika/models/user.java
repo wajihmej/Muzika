@@ -8,15 +8,17 @@ public class user {
     private String username;
     private String email;
     private String token;
+    private String spotifyToken;
 
     public user() {
     }
 
-    public user(String id, String username, String email, String token) {
+    public user(String id, String username, String email, String token,String spotifyToken) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.token = token;
+        this.spotifyToken = spotifyToken;
     }
 
     public static user fromJson(JSONObject jsonObject) {
@@ -39,7 +41,7 @@ public class user {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername( String username) {
         this.username = username;
     }
 
@@ -47,7 +49,7 @@ public class user {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail( String email) {
         this.email = email;
     }
 
@@ -67,6 +69,14 @@ public class user {
         this.id = id;
     }
 
+    public String getSpotifyToken() {
+        return spotifyToken;
+    }
+
+    public void setSpotifyToken(String spotifyToken) {
+        this.spotifyToken = spotifyToken;
+    }
+
     @Override
     public String toString() {
         return "user{" +
@@ -74,6 +84,7 @@ public class user {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", token='" + token + '\'' +
+                ", spotifyToken='" + spotifyToken + '\'' +
                 '}';
     }
 }

@@ -111,5 +111,27 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:text="Login with ?"
+        android:textAlignment="center"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/spotifyLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="40sp"
+        android:drawableLeft="@drawable/spotify_icon_small"
+        android:text="Spotify"
+        app:backgroundTint="#56D861"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+  </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
