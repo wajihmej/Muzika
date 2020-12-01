@@ -95,8 +95,7 @@ public class Login extends AppCompatActivity {
         super.onDestroy();
     }
 
-    void getSpotifyAccessToken()
-    {
+    void getSpotifyAccessToken() {
         AuthenticationRequest.Builder builder =
                 new AuthenticationRequest.Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI);
 
@@ -141,7 +140,8 @@ public class Login extends AppCompatActivity {
                 // Response was successful and contains auth token
                 case TOKEN:
                     Log.d("Token", response.getAccessToken());
-                    pref.edit().putString("Spotify_Token", response.getAccessToken()).commit();
+                    sessionManager.setToken(response.getAccessToken());
+
                     success();
                     break;
                 // Auth flow returned an error

@@ -3,11 +3,19 @@ package tn.example.muzika.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 
+import androidx.annotation.Nullable;
+
+import com.codepath.asynchttpclient.AsyncHttpClient;
+import com.codepath.asynchttpclient.RequestHeaders;
+import com.codepath.asynchttpclient.RequestParams;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.spotify.sdk.android.authentication.LoginActivity;
 
-import java.util.HashMap;
+import org.json.JSONObject;
 
+import okhttp3.Headers;
 import tn.example.muzika.models.user;
 
 public class SessionManager {
@@ -125,6 +133,13 @@ public class SessionManager {
         _context.startActivity(i);
     }
 
+    public void setToken(String token)
+    {
+        getUserInfo(token);
+        editor.putString(KEY_SPOTIFY,token);
+        editor.commit();
+    }
+
     public boolean isLoggedIn() {
         return isLoggedIn;
     }
@@ -132,4 +147,28 @@ public class SessionManager {
     public void setLoggedIn(boolean loggedIn) {
         this.isLoggedIn = loggedIn;
     }
+
+    private void getUserInfo(String token)
+    {
+        AsyncHttpClient client = new AsyncHttpClient();
+        final user[] loggedUser = new user[1];
+        RequestHeaders requestHeaders = new RequestHeaders();
+        requestHeaders.put("Authorization", "Bearer "+token);
+
+        client.get("https://api.spotify.com/v1/me" , requestHeaders ,null
+                , new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Headers headers, JSON json) {
+                        JSONObject userJson = json.jsonObject;
+                        Log.d("Json", userJson.toString());
+
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, @Nullable Headers headers, String errorResponse, @Nullable Throwable throwable) {
+                        Log.d("DEBUG", errorResponse);
+                    }
+                });
+    }
+
 }
