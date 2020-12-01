@@ -52,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Throwable throwable) {
                         Log.e("MainActivity", throwable.getMessage(), throwable);
-
+                        Intent intent =  new Intent(MainActivity.this,Login.class);
+                        startActivity(intent);
                         // Something went wrong when attempting to connect! Handle errors here
                     }
                 });
