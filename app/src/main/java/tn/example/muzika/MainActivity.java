@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 
 import androidx.appcompat.app.AppCompatActivity;
 import com.spotify.android.appremote.api.ConnectionParams;
@@ -30,34 +32,36 @@ public class MainActivity extends AppCompatActivity {
                         .setRedirectUri(REDIRECT_URI)
                         .showAuthView(true)
                         .build();
-        SpotifyAppRemote.connect(this, connectionParams,
-                new Connector.ConnectionListener() {
+        if(SpotifyAppRemote.isSpotifyInstalled(this)) {
+            SpotifyAppRemote.connect(this, connectionParams,
+                    new Connector.ConnectionListener() {
 
-                    @Override
-                    public void onConnected(SpotifyAppRemote spotifyAppRemote) {
-                        mSpotifyAppRemote = spotifyAppRemote;
-                        Log.d("MainActivity", "Connected! Yay!");
-                        //mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:37i9dQZF1DX2sUQwD7tbmL");
-                        SessionManager sessionManager = new SessionManager(context);
-                        if(sessionManager.isLoggedIn())
-                        {Intent intent =  new Intent(MainActivity.this,HomePage.class);
-                        startActivity(intent);}
-                        else
-                        {
-                            Intent intent =  new Intent(MainActivity.this,Login.class);
-                            startActivity(intent);
+                        @Override
+                        public void onConnected(SpotifyAppRemote spotifyAppRemote) {
+                            mSpotifyAppRemote = spotifyAppRemote;
+                            Log.d("MainActivity", "Connected! Yay!");
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        Log.e("MainActivity", throwable.getMessage(), throwable);
-                        Intent intent =  new Intent(MainActivity.this,Login.class);
-                        startActivity(intent);
-                        // Something went wrong when attempting to connect! Handle errors here
-                    }
-                });
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            Log.e("MainActivity", throwable.getMessage(), throwable);
+                            Intent intent = new Intent(MainActivity.this, Login.class);
+                            startActivity(intent);
+                            // Something went wrong when attempting to connect! Handle errors here
+                        }
+                    });
+        }
+        SessionManager sessionManager = new SessionManager(context);
+        if (sessionManager.isLoggedIn()) {
+            Intent intent = new Intent(MainActivity.this, HomePage.class);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(MainActivity.this, Login.class);
+            startActivity(intent);
+        }
     }
+
+
 
     @Override
     protected void onStart() {

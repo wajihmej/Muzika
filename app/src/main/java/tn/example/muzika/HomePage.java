@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -22,8 +24,11 @@ public class HomePage extends AppCompatActivity {
         setContentView(R.layout.activity_home_page);
         SessionManager sessionManager = new SessionManager(getApplicationContext());
         Log.d("USER LOG", sessionManager.getUserDetails().toString());
-        if(MainActivity.mSpotifyAppRemote.isConnected())
+        if(SpotifyAppRemote.isSpotifyInstalled(this)) {
+            if(MainActivity.mSpotifyAppRemote.isConnected())
             Log.d("SpotifyAppRemote", "Is accessible ");
+            MainActivity.mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:37i9dQZF1DX2sUQwD7tbmL");
+        }
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
         //I added this if statement to keep the selected fragment when rotating the device
@@ -33,7 +38,13 @@ public class HomePage extends AppCompatActivity {
         }
 
 
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.top_navigation, menu);
+        return true;
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =

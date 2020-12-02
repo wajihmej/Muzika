@@ -141,7 +141,6 @@ public class Login extends AppCompatActivity {
                 case TOKEN:
                     Log.d("Token", response.getAccessToken());
                     sessionManager.setToken(response.getAccessToken());
-
                     success();
                     break;
                 // Auth flow returned an error
