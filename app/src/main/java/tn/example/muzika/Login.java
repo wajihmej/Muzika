@@ -1,14 +1,19 @@
 package tn.example.muzika;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +41,9 @@ public class Login extends AppCompatActivity {
     SharedPreferences pref;
     SessionManager sessionManager;
 
+
+    //Dialog
+    Dialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +58,10 @@ public class Login extends AppCompatActivity {
         username = (EditText) findViewById(R.id.userName);
         password = (EditText) findViewById(R.id.password);
         Log.d("Spotify App remote", "appRemote.isConnected()");
+
+        //dialog
+        dialog = new Dialog(this);
+
         Register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,6 +144,7 @@ public class Login extends AppCompatActivity {
                     public void onFailure(int statusCode, @Nullable Headers headers, String errorResponse, @Nullable Throwable throwable) {
                         Log.d("DEBUG", errorResponse);
                         loadingDialog.dismissDialog();
+                        OpenErreurDialog(errorResponse);
 
                     }
                 });
@@ -168,4 +181,24 @@ public class Login extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    //dialog
+    private void OpenErreurDialog(String errorResponse){
+        dialog.setContentView(R.layout.erreur_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Button tryagain = dialog.findViewById(R.id.tryagainbutton);
+        TextView text = dialog.findViewById(R.id.Ereurtext);
+        /*
+        if(errorResponse.equals("{\"message\":\"User Not found.\"}"))
+        text.setText("User Not found.");
+        */
+        tryagain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Toast.makeText(Login.this,"OUPS!",Toast.LENGTH_SHORT).show();
+            }
+        });
+        dialog.show();
+    }
 }
