@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -39,6 +40,8 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        final LoadingDialog loadingDialog = new LoadingDialog(Login.this);
+
         sessionManager = new SessionManager(getApplicationContext());
         Login = findViewById(R.id.loginbutton);
         Register = findViewById(R.id.registerbutton);
@@ -57,7 +60,10 @@ public class Login extends AppCompatActivity {
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login();
+                loadingDialog.startLoadingDialog();
+
+                login(loadingDialog);
+
             }
         });
 
@@ -105,7 +111,7 @@ public class Login extends AppCompatActivity {
         AuthenticationClient.openLoginActivity(app, REQUEST_CODE, request);
     }
 
-    void login() {
+    void login(LoadingDialog loadingDialog) {
         AsyncHttpClient client = new AsyncHttpClient();
         final user[] loggedUser = new user[1];
         client.post("https://nameless-cliffs-25074.herokuapp.com/api/auth/signin",
@@ -125,6 +131,8 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onFailure(int statusCode, @Nullable Headers headers, String errorResponse, @Nullable Throwable throwable) {
                         Log.d("DEBUG", errorResponse);
+                        loadingDialog.dismissDialog();
+
                     }
                 });
     }

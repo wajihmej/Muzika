@@ -1,5 +1,9 @@
 package tn.example.muzika.models;
 
+import android.util.JsonReader;
+
+import com.google.gson.JsonObject;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,16 +13,17 @@ public class user {
     private String email;
     private String token;
     private String spotifyToken;
-
+    private String image;
     public user() {
     }
 
-    public user(String id, String username, String email, String token,String spotifyToken) {
+    public user(String id, String username, String email, String token,String spotifyToken,String image) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.token = token;
         this.spotifyToken = spotifyToken;
+        this.image = image;
     }
 
     public static user fromJson(JSONObject jsonObject) {
@@ -29,6 +34,7 @@ public class user {
             u.username = jsonObject.getString("username");
             u.email = jsonObject.getString("email");
             u.token = jsonObject.getString("accessToken");
+            u.image = jsonObject.getString("image");
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -69,6 +75,14 @@ public class user {
         this.id = id;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public String getSpotifyToken() {
         return spotifyToken;
     }
@@ -85,6 +99,7 @@ public class user {
                 ", email='" + email + '\'' +
                 ", token='" + token + '\'' +
                 ", spotifyToken='" + spotifyToken + '\'' +
+                ", image='" + image + '\'' +
                 '}';
     }
 }
