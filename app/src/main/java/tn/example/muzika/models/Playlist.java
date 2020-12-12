@@ -1,5 +1,8 @@
 package tn.example.muzika.models;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Playlist {
 
     private String href;
@@ -14,6 +17,9 @@ public class Playlist {
         this.description=description;
         this.imagePlaylist=imagePlaylist;
     }
+
+
+
 
     public String getHref() {
         return href;

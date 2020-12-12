@@ -11,6 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
+import com.spotify.sdk.android.authentication.AuthenticationClient;
+import com.spotify.sdk.android.authentication.AuthenticationRequest;
+import com.spotify.sdk.android.authentication.AuthenticationResponse;
+import com.spotify.sdk.android.authentication.LoginActivity;
 
 import tn.example.muzika.utils.SessionManager;
 
@@ -18,15 +22,20 @@ import tn.example.muzika.utils.SessionManager;
 public class MainActivity extends AppCompatActivity {
 
 
-    private static final String CLIENT_ID = "fe584e15ac8847edaa874f527f1a8436";
+    private static final int REQUEST_CODE = 1337;
     private static final String REDIRECT_URI = "https://nameless-cliffs-25074.herokuapp.com/";
+    private static final String CLIENT_ID = "fe584e15ac8847edaa874f527f1a8436";
+
     public static SpotifyAppRemote mSpotifyAppRemote;
     Context context;
+    private SessionManager sessionManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
+        sessionManager = new SessionManager(context);
         ConnectionParams connectionParams =
                 new ConnectionParams.Builder(CLIENT_ID)
                         .setRedirectUri(REDIRECT_URI)
@@ -35,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         if(SpotifyAppRemote.isSpotifyInstalled(this)) {
             SpotifyAppRemote.connect(this, connectionParams,
                     new Connector.ConnectionListener() {
-
                         @Override
                         public void onConnected(SpotifyAppRemote spotifyAppRemote) {
                             mSpotifyAppRemote = spotifyAppRemote;
@@ -51,17 +59,50 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         }
-        SessionManager sessionManager = new SessionManager(context);
-        if (sessionManager.isLoggedIn()) {
-            Intent intent = new Intent(MainActivity.this, HomePage.class);
-            startActivity(intent);
-        } else {
+
             Intent intent = new Intent(MainActivity.this, Login.class);
             startActivity(intent);
-        }
+
     }
 
 
+    public void getSpotifyAccessToken() {
+        AuthenticationRequest.Builder builder =
+                new AuthenticationRequest.Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI);
+
+        builder.setScopes(new String[]{"streaming"});
+        AuthenticationRequest request = builder.build();
+
+        AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        onActivityResult(requestCode, resultCode, intent);
+
+        // Check if result comes from the correct activity
+        if (requestCode == REQUEST_CODE) {
+            AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
+
+            switch (response.getType()) {
+                // Response was successful and contains auth token
+                case TOKEN:
+                    Log.d("Token", response.getAccessToken());
+                    sessionManager.setToken(response.getAccessToken());
+                    //this.setToken(response.getAccessToken());
+                    break;
+                // Auth flow returned an error
+                case ERROR:
+                    Log.d("Token retrieval error", response.getError());
+                    // Handle error response
+                    break;
+
+                // Most likely auth flow was cancelled
+                default:
+                    // Handle other cases
+            }
+        }
+    }
 
     @Override
     protected void onStart() {

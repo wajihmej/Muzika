@@ -59,8 +59,8 @@ public class Register extends AppCompatActivity {
 
                     @Override
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
-                        JSONObject userJson = json.jsonObject;
-                        loggedUser[0] = user.fromJson(userJson);
+                        //SONObject userJson = json.jsonObject;
+                        //loggedUser[0] = user.fromJson(userJson);
                         Log.d("Json" , loggedUser[0].toString());
                         startActivity(intent);
                     }

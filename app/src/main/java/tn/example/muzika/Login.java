@@ -32,12 +32,9 @@ import tn.example.muzika.utils.SessionManager;
 
 public class Login extends AppCompatActivity {
 
-    private static final int REQUEST_CODE = 1337;
-    private static final String REDIRECT_URI = "https://nameless-cliffs-25074.herokuapp.com/";
-    private static final String CLIENT_ID = "fe584e15ac8847edaa874f527f1a8436";
+    private Activity app = this;
     Button Register, Login, spotifyLogin;
     EditText username, password;
-    Activity app = this;
     SharedPreferences pref;
     SessionManager sessionManager;
 
@@ -82,11 +79,12 @@ public class Login extends AppCompatActivity {
         spotifyLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSpotifyAccessToken();
+
             }
         });
 
     }
+
 
     @Override
     protected void onStart() {
@@ -113,15 +111,7 @@ public class Login extends AppCompatActivity {
         super.onDestroy();
     }
 
-    void getSpotifyAccessToken() {
-        AuthenticationRequest.Builder builder =
-                new AuthenticationRequest.Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI);
 
-        builder.setScopes(new String[]{"streaming"});
-        AuthenticationRequest request = builder.build();
-
-        AuthenticationClient.openLoginActivity(app, REQUEST_CODE, request);
-    }
 
     void login(LoadingDialog loadingDialog) {
         AsyncHttpClient client = new AsyncHttpClient();
@@ -136,7 +126,7 @@ public class Login extends AppCompatActivity {
                         loggedUser[0] = user.fromJson(userJson);
                         Log.d("Json", json.toString());
                         sessionManager.createLoginSession(loggedUser[0].getUsername(), loggedUser[0].getEmail(), loggedUser[0].getToken());
-                        getSpotifyAccessToken();
+                        loadingDialog.startLoadingDialog();
                         success();
                     }
 
@@ -150,31 +140,9 @@ public class Login extends AppCompatActivity {
                 });
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
 
-        // Check if result comes from the correct activity
-        if (requestCode == REQUEST_CODE) {
-            AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
 
-            switch (response.getType()) {
-                // Response was successful and contains auth token
-                case TOKEN:
-                    Log.d("Token", response.getAccessToken());
-                    sessionManager.setToken(response.getAccessToken());
-                    success();
-                    break;
-                // Auth flow returned an error
-                case ERROR:
-                    // Handle error response
-                    break;
 
-                // Most likely auth flow was cancelled
-                default:
-                    // Handle other cases
-            }
-        }
-    }
 
     void success() {
         Intent intent = new Intent(Login.this, HomePage.class);

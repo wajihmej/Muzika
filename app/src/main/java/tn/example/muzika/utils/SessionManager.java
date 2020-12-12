@@ -1,5 +1,6 @@
 package tn.example.muzika.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +12,9 @@ import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.RequestHeaders;
 import com.codepath.asynchttpclient.RequestParams;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.spotify.sdk.android.authentication.AuthenticationClient;
+import com.spotify.sdk.android.authentication.AuthenticationRequest;
+import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.authentication.LoginActivity;
 
 import org.json.JSONObject;
@@ -56,6 +60,8 @@ public class SessionManager {
      */
     int PRIVATE_MODE = 0;
 
+
+
     public static boolean isLoggedIn;
 
     /**
@@ -66,7 +72,6 @@ public class SessionManager {
         pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = pref.edit();
         isLoggedIn = pref.getBoolean(IS_LOGIN,false);
-
     }
 
     /**
@@ -146,7 +151,10 @@ public class SessionManager {
 
     public void setLoggedIn(boolean loggedIn) {
         this.isLoggedIn = loggedIn;
+
     }
+
+
 
     private void getUserInfo(String token)
     {
@@ -170,5 +178,4 @@ public class SessionManager {
                     }
                 });
     }
-
 }
