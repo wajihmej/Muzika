@@ -35,7 +35,7 @@ public class Playlist {
                 playlist.setDescription(item.getString("description"));
                 playlist.setImageUrl(item.getJSONArray("images").getJSONObject(0).getString("url"));
                 playlist.setTracksHref(item.getJSONObject("tracks").getString("href"));
-
+                Log.d("image", playlist.getImageUrl());
                 finalList.add(playlist);
             }
         } catch (JSONException e) {
