@@ -22,8 +22,11 @@ import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import okhttp3.Headers;
 import okhttp3.MediaType;
+import tn.example.muzika.models.Playlist;
 import tn.example.muzika.models.user;
 import tn.example.muzika.utils.SessionManager;
 
@@ -44,7 +47,7 @@ public class FragmentFeatured extends Fragment {
 }
 
 class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder>{
-    private String[] dataSet;
+    private ArrayList<Playlist> playlists;
 
 
 
@@ -81,18 +84,17 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull featuredAdapter.ViewHolder holder, int position) {
-
+        holder.title.setText(playlists.get(position).getName());
     }
 
     @Override
     public int getItemCount() {
-        return 2;
+        return playlists.size();
     }
 
 
     void getData(Context cntx) {
         AsyncHttpClient client = new AsyncHttpClient();
-        final user[] loggedUser = new user[1];
         RequestHeaders requestHeaders = new RequestHeaders();
         SessionManager sessionManager = new SessionManager(cntx);
         requestHeaders.put("Authorization", "Bearer "+sessionManager.getUserDetails().getSpotifyToken());
@@ -102,7 +104,7 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder>{
                     @Override
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         Log.d("Featured Fragment",json.toString());
-
+                         playlists = Playlist.fromJson(json.jsonObject);
                     }
 
                     @Override

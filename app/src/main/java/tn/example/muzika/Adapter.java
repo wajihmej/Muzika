@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
+//import com.squareup.picasso.Picasso;
 
 import tn.example.muzika.models.Playlist;
 import tn.example.muzika.models.user;
@@ -39,9 +39,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull Adapter.ViewHolder holder, int position) {
-        holder.Title.setText(playlists.get(position).getName());
-        holder.Description.setText(playlists.get(position).getDescription());
-        Picasso.get().load(playlists.get(position).getImagePlaylist()).into(holder.imageView);
+        //holder.Title.setText(playlists.get(position).getName());
+        //holder.Description.setText(playlists.get(position).getDescription());
+        //Picasso.get().load(playlists.get(position).getImagePlaylist()).into(holder.imageView);
     }
 
     @Override
