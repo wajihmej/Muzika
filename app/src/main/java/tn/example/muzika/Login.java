@@ -134,7 +134,7 @@ public class Login extends AppCompatActivity {
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         JSONObject userJson = json.jsonObject;
                         loggedUser[0] = user.fromJson(userJson);
-                        Log.d("Json", loggedUser[0].toString());
+                        Log.d("Json", json.toString());
                         sessionManager.createLoginSession(loggedUser[0].getUsername(), loggedUser[0].getEmail(), loggedUser[0].getToken());
                         getSpotifyAccessToken();
                         success();
