@@ -2,7 +2,6 @@ package tn.example.muzika;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,7 +23,6 @@ import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
 
 import okhttp3.Headers;
 import tn.example.muzika.models.Playlist;

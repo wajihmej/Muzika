@@ -4,17 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
-import com.spotify.sdk.android.authentication.LoginActivity;
 
 import tn.example.muzika.utils.SessionManager;
 
@@ -41,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
                         .setRedirectUri(REDIRECT_URI)
                         .showAuthView(true)
                         .build();
-        if(SpotifyAppRemote.isSpotifyInstalled(this)) {
+        if (SpotifyAppRemote.isSpotifyInstalled(this)) {
             SpotifyAppRemote.connect(this, connectionParams,
                     new Connector.ConnectionListener() {
                         @Override
@@ -60,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
                     });
         }
 
-            Intent intent = new Intent(MainActivity.this, Login.class);
-            startActivity(intent);
+        Intent intent = new Intent(MainActivity.this, Login.class);
+        startActivity(intent);
 
     }
 
