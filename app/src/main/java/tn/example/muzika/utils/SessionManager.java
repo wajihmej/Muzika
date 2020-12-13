@@ -1,6 +1,5 @@
 package tn.example.muzika.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,16 +9,14 @@ import androidx.annotation.Nullable;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.RequestHeaders;
-import com.codepath.asynchttpclient.RequestParams;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
-import com.spotify.sdk.android.authentication.AuthenticationClient;
-import com.spotify.sdk.android.authentication.AuthenticationRequest;
-import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.authentication.LoginActivity;
 
-import org.json.JSONObject;
+import org.json.JSONException;
 
 import okhttp3.Headers;
+import tn.example.muzika.FragmentProfile;
+import tn.example.muzika.models.UserDetails;
 import tn.example.muzika.models.user;
 
 public class SessionManager {
@@ -35,6 +32,7 @@ public class SessionManager {
     public static final String KEY_TOKEN = "token";
 
     public static final String KEY_SPOTIFY = "Spotify_Token";
+    public static final String KEY_ID = "Id";
     /**
      * Sharedpref file name
      */
@@ -77,8 +75,9 @@ public class SessionManager {
     /**
      * Create login session
      */
-    public void createLoginSession(String name, String email,String token) {
+    public void createLoginSession(String id,String name, String email,String token) {
         editor.putBoolean(IS_LOGIN, true);
+        editor.putString(KEY_ID,id);
         editor.putString(KEY_NAME, name);
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_TOKEN, token);
@@ -91,6 +90,8 @@ public class SessionManager {
      */
     public user getUserDetails() {
         user user = new user();
+
+        user.setId(pref.getString(KEY_ID,null));
 // user name
         user.setUsername(pref.getString(KEY_NAME, null));
 // user email id
@@ -140,7 +141,6 @@ public class SessionManager {
 
     public void setToken(String token)
     {
-        getUserInfo(token);
         editor.putString(KEY_SPOTIFY,token);
         editor.commit();
     }
@@ -154,28 +154,4 @@ public class SessionManager {
 
     }
 
-
-
-    private void getUserInfo(String token)
-    {
-        AsyncHttpClient client = new AsyncHttpClient();
-        final user[] loggedUser = new user[1];
-        RequestHeaders requestHeaders = new RequestHeaders();
-        requestHeaders.put("Authorization", "Bearer "+token);
-
-        client.get("https://api.spotify.com/v1/me" , requestHeaders ,null
-                , new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Headers headers, JSON json) {
-                        JSONObject userJson = json.jsonObject;
-                        Log.d("Json", userJson.toString());
-
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, @Nullable Headers headers, String errorResponse, @Nullable Throwable throwable) {
-                        Log.d("DEBUG", errorResponse);
-                    }
-                });
-    }
 }

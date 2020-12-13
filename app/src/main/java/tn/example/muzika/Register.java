@@ -61,7 +61,8 @@ public class Register extends AppCompatActivity {
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         //SONObject userJson = json.jsonObject;
                         //loggedUser[0] = user.fromJson(userJson);
-                        Log.d("Json" , loggedUser[0].toString());
+                        //Log.d("Json" , loggedUser[0].toString());
+                        Intent intent = new Intent(Register.this, Login.class);
                         startActivity(intent);
                     }
 

@@ -1,6 +1,9 @@
 package tn.example.muzika;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.codepath.asynchttpclient.AsyncHttpClient;
+import com.codepath.asynchttpclient.RequestHeaders;
+import com.codepath.asynchttpclient.RequestParams;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+
+import okhttp3.Headers;
+import tn.example.muzika.models.Playlist;
+import tn.example.muzika.utils.SessionManager;
 
 public class FragmentHome extends Fragment {
 
@@ -26,47 +38,56 @@ public class FragmentHome extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
 
+        ProgressDialog dialog = new ProgressDialog(this.getActivity());
+        //dialog.show();
+        //getPosts(this.getContext(),dialog);
         recyclerView.setAdapter(new homeAdapter());
         return rootView;
+    }
+
+    void getPosts(Context cntx, ProgressDialog progressDialog) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        SessionManager sessionManager = new SessionManager(cntx);
+        client.get("https://api.spotify.com/v1/browse/featured-playlists"
+                , new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Headers headers, JSON json) {
+                        Log.d("Featured Fragment", json.toString());
+                        progressDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, @Nullable Headers headers, String errorResponse, @Nullable Throwable throwable) {
+                        Log.d("DEBUG", errorResponse);
+                    }
+                });
     }
 }
 
 class homeAdapter extends RecyclerView.Adapter<homeAdapter.ViewHolder>{
-    private String[] dataSet;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView title;
-        private final TextView description;
 
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
 
-            title = (TextView) view.findViewById(R.id.adapterTextView);
-            description = (TextView) view.findViewById(R.id.descriptionTextView);
+
         }
 
-        public TextView getTextView() {
-            return title;
-        }
-        public TextView getDescription() {
-            return description;
-        }
-    }
+           }
 
     @NonNull
     @Override
     public homeAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.home_adapter, parent, false);
+                .inflate(R.layout.post_adapter, parent, false);
 
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull homeAdapter.ViewHolder holder, int position) {
-        holder.getTextView().setText("Lofi playlist Title");
-        holder.getDescription().setText("Cool playlist");
     }
 
     @Override

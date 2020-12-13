@@ -13,6 +13,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.spotify.android.appremote.api.ConnectionParams;
+import com.spotify.android.appremote.api.Connector;
+import com.spotify.android.appremote.api.Connector.ConnectionListener;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
@@ -24,6 +27,12 @@ import tn.example.muzika.utils.SessionManager;
 public class HomePage extends AppCompatActivity {
 
     private SessionManager sessionManager;
+    public static SpotifyAppRemote mSpotifyAppRemote;
+    private static final int REQUEST_CODE = 1337;
+    private static final String REDIRECT_URI = "https://nameless-cliffs-25074.herokuapp.com/";
+    private static final String CLIENT_ID = "fe584e15ac8847edaa874f527f1a8436";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +44,31 @@ public class HomePage extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
         //I added this if statement to keep the selected fragment when rotating the device
+
+        ConnectionParams connectionParams =
+                new ConnectionParams.Builder(CLIENT_ID)
+                        .setRedirectUri(REDIRECT_URI)
+                        .showAuthView(true)
+                        .build();
+        if (SpotifyAppRemote.isSpotifyInstalled(this)) {
+            SpotifyAppRemote.connect(this, connectionParams,
+                    new ConnectionListener() {
+                        @Override
+                        public void onConnected(SpotifyAppRemote spotifyAppRemote) {
+                            mSpotifyAppRemote = spotifyAppRemote;
+                            Log.d("HomePage", "Connected! Yay!");
+                        }
+
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            Log.d("SpotifyApp", "Not connected");
+                            // Something went wrong when attempting to connect! Handle errors here
+                        }
+                    });
+        }
+
+
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new FragmentHome()).commit();
@@ -71,12 +105,6 @@ public class HomePage extends AppCompatActivity {
                     return true;
                 }
             };
-
-    private static final int REQUEST_CODE = 1337;
-    private static final String REDIRECT_URI = "https://nameless-cliffs-25074.herokuapp.com/";
-    private static final String CLIENT_ID = "fe584e15ac8847edaa874f527f1a8436";
-
-
 
     public void getSpotifyAccessToken() {
         AuthenticationRequest.Builder builder =

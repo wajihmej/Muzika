@@ -2,12 +2,21 @@ package tn.example.muzika;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,6 +40,7 @@ import tn.example.muzika.utils.SessionManager;
 public class FragmentFeatured extends Fragment {
     ProgressDialog progressDialog;
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,7 +62,7 @@ public class FragmentFeatured extends Fragment {
 }
 
 class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> implements Runnable {
-    private ArrayList<Playlist> playlists;
+    private static ArrayList<Playlist> playlists;
     Context context;
     featuredAdapter adapter = this;
     featuredAdapter(Context context,ProgressDialog progressDialog) {
@@ -66,14 +76,40 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.home_adapter, parent, false);
         Log.d("VIEW", "onCreateViewHolder: ");
+
         return new ViewHolder(view);
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull featuredAdapter.ViewHolder holder, int position) {
         holder.title.setText(playlists.get(position).getName());
         holder.description.setText(playlists.get(position).getDescription());
         Picasso.get().load(playlists.get(position).getImageUrl()).into(holder.imageplaylist);
+        ImageButton shareButton = (ImageButton) holder.itemView.findViewById(R.id.shareButton);
+        shareButton.setOnClickListener(v -> {
+            View popupView = LayoutInflater.from(holder.itemView.getContext()).inflate(R.layout.share_popup, null);
+            int width = LinearLayout.LayoutParams.MATCH_PARENT;
+            int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            boolean focusable = true; // lets taps outside the popup also dismiss it
+            final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+            popupView.findViewById(R.id.Share).setOnClickListener(v1 -> {
+                EditText postEdit = (EditText) popupView.findViewById(R.id.postText);
+                Log.d("Post Content", "onBindViewHolder: "+postEdit.getText().toString());
+                sharePost(holder.itemView.getContext(),position,postEdit.getText().toString(),popupWindow);
+
+            });
+            popupView.findViewById(R.id.Cancel).setOnClickListener(v12 -> {
+                popupWindow.dismiss();
+            });
+            popupWindow.showAtLocation(holder.itemView, Gravity.CENTER, 0, 0);
+        });
+
+        ImageButton playButton = (ImageButton) holder.itemView.findViewById(R.id.play);
+        playButton.setOnClickListener(v -> {
+           if(HomePage.mSpotifyAppRemote != null)
+               MainActivity.mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:"+playlists.get(position).getId());
+        });
     }
 
 
@@ -83,6 +119,30 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
             return 0;
         else
             return playlists.size();
+    }
+
+
+
+    void sharePost(Context cntx,int position,String postContent,PopupWindow window){
+        AsyncHttpClient client = new AsyncHttpClient();
+        SessionManager sessionManager = new SessionManager(cntx);
+        String userId = sessionManager.getUserDetails().getId();
+        String playlistId = playlists.get(position).getId();
+        String body = "{\n" +
+                "    \"postContent\" : \""+postContent+"\",\n" +
+                "    \"playlistId\" : \""+playlistId+"\"\n}";
+        client.post("https://nameless-cliffs-25074.herokuapp.com/api/posts/add/"+userId, body, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                Log.d("Post response", "onSuccess: "+json.toString());
+                window.dismiss();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.d("Post response", "onFailure: "+response);
+            }
+        });
     }
 
     void getData(Context cntx,ProgressDialog progressDialog) {

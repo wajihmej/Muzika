@@ -124,8 +124,8 @@ public class Login extends AppCompatActivity {
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         JSONObject userJson = json.jsonObject;
                         loggedUser[0] = user.fromJson(userJson);
-                        Log.d("Json", json.toString());
-                        sessionManager.createLoginSession(loggedUser[0].getUsername(), loggedUser[0].getEmail(), loggedUser[0].getToken());
+                        Log.d("USER JSON STRING", json.toString());
+                        sessionManager.createLoginSession(loggedUser[0].getId(),loggedUser[0].getUsername(), loggedUser[0].getEmail(), loggedUser[0].getToken());
                         loadingDialog.startLoadingDialog();
                         success();
                     }
