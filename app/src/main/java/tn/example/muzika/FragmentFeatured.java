@@ -2,6 +2,7 @@ package tn.example.muzika;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -66,7 +68,7 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.home_adapter, parent, false);
         Log.d("VIEW", "onCreateViewHolder: ");
-        return new ViewHolder(view);
+        return new ViewHolder(view,playlists);
     }
 
     @Override
@@ -74,6 +76,7 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
         holder.title.setText(playlists.get(position).getName());
         holder.description.setText(playlists.get(position).getDescription());
         Picasso.get().load(playlists.get(position).getImageUrl()).into(holder.imageplaylist);
+
     }
 
 
@@ -117,12 +120,25 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
         private final TextView title;
         private final TextView description;
         private final ImageView imageplaylist;
-        public ViewHolder(View view) {
+        public ViewHolder(View view,ArrayList<Playlist> playlists) {
             super(view);
             // Define click listener for the ViewHolder's View
             title = (TextView) view.findViewById(R.id.adapterTextView);
             description = (TextView) view.findViewById(R.id.descriptionTextView);
             imageplaylist = (ImageView) view.findViewById(R.id.imageView2);
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                 int i=getAdapterPosition();
+                    Intent intent = new Intent(view.getContext(), tracks.class);
+
+                    Log.d("title", String.valueOf(playlists.get(getAdapterPosition()).getTracksHref()));
+
+                  //  view.getContext().startActivity(intent);
+
+                }
+            });
         }
 
         public TextView getTextView() {

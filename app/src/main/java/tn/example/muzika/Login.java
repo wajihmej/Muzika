@@ -126,8 +126,7 @@ public class Login extends AppCompatActivity {
                         loggedUser[0] = user.fromJson(userJson);
                         Log.d("Json", json.toString());
                         sessionManager.createLoginSession(loggedUser[0].getUsername(), loggedUser[0].getEmail(), loggedUser[0].getToken());
-                        loadingDialog.startLoadingDialog();
-                        success();
+                        success(loadingDialog);
                     }
 
                     @Override
@@ -144,9 +143,10 @@ public class Login extends AppCompatActivity {
 
 
 
-    void success() {
+    void success(LoadingDialog loadingDialog) {
         Intent intent = new Intent(Login.this, HomePage.class);
         startActivity(intent);
+        loadingDialog.dismissDialog();
     }
 
 
