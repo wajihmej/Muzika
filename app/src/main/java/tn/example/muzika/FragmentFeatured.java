@@ -2,16 +2,12 @@ package tn.example.muzika;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.media.Image;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -58,7 +54,6 @@ public class FragmentFeatured extends Fragment {
         recyclerView.setAdapter(adapter);
         return rootView;
     }
-
 }
 
 class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> implements Runnable {
@@ -180,9 +175,9 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
-            title = (TextView) view.findViewById(R.id.adapterTextView);
+            title = (TextView) view.findViewById(R.id.playlistNameView);
             description = (TextView) view.findViewById(R.id.descriptionTextView);
-            imageplaylist = (ImageView) view.findViewById(R.id.imageView2);
+            imageplaylist = (ImageView) view.findViewById(R.id.playlistImageView);
         }
 
         public TextView getTextView() {

@@ -24,12 +24,13 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/imageView6"
+                android:id="@+id/profileImageView"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/imageView2"
+                app:layout_constraintBottom_toTopOf="@+id/playlistImageView"
                 app:layout_constraintEnd_toStartOf="@+id/postContent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -47,27 +48,27 @@
                 android:text="TextView"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@+id/imageView2"
+                app:layout_constraintBottom_toTopOf="@+id/playlistImageView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/playlistImageView"
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="4dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toTopOf="@+id/cardView2"
-                app:layout_constraintEnd_toStartOf="@+id/adapterTextView"
+                app:layout_constraintEnd_toStartOf="@+id/playlistNameView"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_launcher_foreground"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <TextView
-                android:id="@+id/adapterTextView"
+                android:id="@+id/playlistNameView"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:background="@color/creme"
@@ -76,13 +77,13 @@
                 android:textSize="24sp"
                 app:layout_constraintBottom_toTopOf="@+id/cardView2"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintStart_toEndOf="@+id/playlistImageView"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView2"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_width="364dp"
+                android:layout_height="138dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
@@ -91,48 +92,35 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2">
+                app:layout_constraintTop_toBottomOf="@+id/playlistImageView">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent" >
 
-                    <ImageButton
-                        android:id="@+id/play"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginEnd="196dp"
-                        android:background="#02FFFFFF"
-                        android:tint="#00BCD4"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/shareButton"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@android:drawable/ic_media_play" />
-
-                    <ImageButton
-                        android:id="@+id/imageButton"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginEnd="5dp"
-                        android:backgroundTint="#00F44336"
-                        android:tint="#F44336"
+                    <EditText
+                        android:id="@+id/editTextTextPersonName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="17dp"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:text="Name"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/favorite_black_18dp" />
+                        app:layout_constraintStart_toStartOf="parent" />
 
-                    <ImageButton
-                        android:id="@+id/shareButton"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginEnd="5dp"
-                        android:background="#00FFFFFF"
-                        android:tint="#FF9800"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/imageButton"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@android:drawable/ic_menu_add" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/commentsRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
