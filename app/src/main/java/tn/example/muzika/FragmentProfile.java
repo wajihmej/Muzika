@@ -61,9 +61,11 @@ public class FragmentProfile extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        profileName.setText(details[0].getDisplayName());
-                        Picasso.get().load(details[0].getImageUrl()).into(profileImage);
-                    }
+                        if(details[0] != null) {
+                            profileName.setText(details[0].getDisplayName());
+                            Picasso.get().load(details[0].getImageUrl()).into(profileImage);
+                        }
+                        }
 
                     @Override
                     public void onFailure(int statusCode, @Nullable Headers headers, String errorResponse, @Nullable Throwable throwable) {
