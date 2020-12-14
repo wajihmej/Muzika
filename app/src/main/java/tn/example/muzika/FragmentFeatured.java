@@ -2,6 +2,7 @@ package tn.example.muzika;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -82,6 +83,12 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
         holder.description.setText(playlists.get(position).getDescription());
         Picasso.get().load(playlists.get(position).getImageUrl()).into(holder.imageplaylist);
         ImageButton shareButton = (ImageButton) holder.itemView.findViewById(R.id.shareButton);
+        //GO TO MUSIC LIST
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(this.context,tracks.class);
+            intent.putExtra("url",playlists.get(position).getTracksHref());
+            context.startActivity(intent);
+        });
         shareButton.setOnClickListener(v -> {
             View popupView = LayoutInflater.from(holder.itemView.getContext()).inflate(R.layout.share_popup, null);
             int width = LinearLayout.LayoutParams.MATCH_PARENT;
