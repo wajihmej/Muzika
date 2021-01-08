@@ -1,10 +1,13 @@
 package tn.example.muzika;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,10 +27,15 @@ import tn.example.muzika.models.UserDetails;
 import tn.example.muzika.models.user;
 import tn.example.muzika.utils.SessionManager;
 
+import static android.content.Context.MODE_PRIVATE;
+import static tn.example.muzika.Login.FILE_NAME;
+
 public class FragmentProfile extends Fragment {
 
     TextView profileName;
     ImageView profileImage;
+    SharedPreferences sharedPreferences;
+    ImageButton lougoutbtn;
 
     @Nullable
     @Override
@@ -35,12 +43,19 @@ public class FragmentProfile extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         SessionManager sessionManager = new SessionManager(this.getContext());
         String token = sessionManager.getUserDetails().getSpotifyToken();
-        getUserInfo(token);
+        sharedPreferences = this.getActivity().getSharedPreferences(FILE_NAME,MODE_PRIVATE);
+        getUserInfo(sharedPreferences.getString("LOGIN",""));
 
         profileName = view.findViewById(R.id.profileName);
         profileImage = view.findViewById(R.id.profileImage);
+        lougoutbtn = view.findViewById(R.id.logoutbnt);
+
+        lougoutbtn.setOnClickListener(v -> {
+            sharedPreferences.edit().clear().apply();
+            this.getActivity().finish();
 
 
+        });
         return view;
     }
 
