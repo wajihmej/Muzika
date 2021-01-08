@@ -21,14 +21,14 @@ public class UserDetails {
         details.displayName = object.getString("display_name");
         details.spotifyId = object.getString("id");
         JSONArray images = object.getJSONArray("images");
-       /* if(images.toString()==""){
-            details.imageUrl = "";
+        if(images.length()==0){
+            details.imageUrl ="";
         }
         else
         {
             details.imageUrl = images.getJSONObject(0).getString("url");
-        }*/
-        details.imageUrl = "";
+        }
+
 
         Log.d("User details class : ", "detailsFromJson: " + details.toString());
         return details;

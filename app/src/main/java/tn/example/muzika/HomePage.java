@@ -20,6 +20,8 @@ import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
+import org.json.JSONException;
+
 import tn.example.muzika.utils.SessionManager;
 
 import static tn.example.muzika.Login.FILE_NAME;
@@ -127,6 +129,9 @@ public class HomePage extends AppCompatActivity {
                 case TOKEN:
                     Log.d("Token", response.getAccessToken());
                     sessionManager.setToken(response.getAccessToken());
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("LOGIN",response.getAccessToken());
+                        editor.apply();
                     //this.setToken(response.getAccessToken());
                     break;
                 // Auth flow returned an error

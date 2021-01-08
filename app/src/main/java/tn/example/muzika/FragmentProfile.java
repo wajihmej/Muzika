@@ -44,6 +44,7 @@ public class FragmentProfile extends Fragment {
         SessionManager sessionManager = new SessionManager(this.getContext());
         String token = sessionManager.getUserDetails().getSpotifyToken();
         sharedPreferences = this.getActivity().getSharedPreferences(FILE_NAME,MODE_PRIVATE);
+        Log.d("salem", sharedPreferences.getString("LOGIN",""));
         getUserInfo(sharedPreferences.getString("LOGIN",""));
 
         profileName = view.findViewById(R.id.profileName);
@@ -77,11 +78,14 @@ public class FragmentProfile extends Fragment {
                         }
                         if (details[0] != null) {
                             profileName.setText(details[0].getDisplayName());
+                        }
+                        if(details[0].getImageUrl()==""){
+
+                        }
+                        else {
                             Picasso.get().load(details[0].getImageUrl()).into(profileImage);
                         }
-                        if(details[0].getImageUrl() != null){
-                            Picasso.get().load(details[0].getImageUrl()).into(profileImage);
-                        }
+
 
                     }
 

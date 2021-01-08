@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import okhttp3.Headers;
@@ -131,10 +132,6 @@ public class Login extends AppCompatActivity {
                         Log.d("USER JSON STRING", json.toString());
                         sessionManager.createLoginSession(loggedUser[0].getId(), loggedUser[0].getUsername(), loggedUser[0].getEmail(), loggedUser[0].getToken());
                         loadingDialog.startLoadingDialog();
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("LOGIN",loggedUser[0].getToken());
-                        editor.apply();
-
                         success(loadingDialog);
 
                     }

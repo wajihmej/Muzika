@@ -1,5 +1,6 @@
 package tn.example.muzika;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -38,6 +39,7 @@ public class FragmentHome extends Fragment {
 
     private RecyclerView recyclerView;
     private RecyclerView CommentView;
+    ProgressDialog progressDialog;
 
     @Nullable
     @Override
@@ -48,7 +50,13 @@ public class FragmentHome extends Fragment {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
-        recyclerView.setAdapter(new homeAdapter(this.getContext()));
+        progressDialog = new ProgressDialog(this.getContext());
+        progressDialog.show();
+        progressDialog.setContentView(R.layout.custom_dialog);
+        progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        recyclerView.setAdapter(new homeAdapter(this.getContext(),progressDialog));
+
 
        /* CommentView = (RecyclerView) rootView.findViewById(R.id.commentsRecyclerView);
         CommentView.setHasFixedSize(true);
@@ -72,9 +80,9 @@ class homeAdapter extends RecyclerView.Adapter<homeAdapter.ViewHolder> {
     OkHttpClient client = new OkHttpClient();
     SessionManager sessionManager;
 
-    public homeAdapter(Context context) {
+    public homeAdapter(Context context,ProgressDialog progressDialog) {
         sessionManager = new SessionManager(context);
-        getPosts(context);
+        getPosts(context,progressDialog);
 
     }
 
@@ -119,7 +127,7 @@ class homeAdapter extends RecyclerView.Adapter<homeAdapter.ViewHolder> {
         return posts.isEmpty() ? 0 : posts.size();
     }
 
-    void getPosts(Context cntx) {
+    void getPosts(Context cntx,ProgressDialog progressDialog) {
         AsyncHttpClient client = new AsyncHttpClient();
         client.get("https://nameless-cliffs-25074.herokuapp.com/api/posts/friendsPosts/" + sessionManager.getUserDetails().getId()
                 , new JsonHttpResponseHandler() {
