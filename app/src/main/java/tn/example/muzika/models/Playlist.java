@@ -1,5 +1,4 @@
 package tn.example.muzika.models;
-
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -17,16 +16,16 @@ public class Playlist {
     String imageUrl;
 
 
-    public Playlist() {
+    public Playlist(){
     }
 
     public static ArrayList fromJson(JSONObject jsonObject) {
 
         ArrayList finalList = new ArrayList();
         try {
-            JSONObject playlists = jsonObject.getJSONObject("playlists");
+            JSONObject playlists  = jsonObject.getJSONObject("playlists");
             JSONArray items = playlists.getJSONArray("items");
-            for (int i = 0; i < items.length(); i++) {
+            for (int i=0 ; i<items.length() ; i++) {
                 JSONObject item = (JSONObject) items.get(i);
                 Log.d("Playlist test", String.valueOf(item.length()));
                 Playlist playlist = new Playlist();
@@ -42,8 +41,7 @@ public class Playlist {
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
-        }
-        ;
+        };
         // Return new object
         return finalList;
     }

@@ -19,6 +19,7 @@
         <activity android:name=".Register" />
         <activity android:name=".Login" />
         <activity android:name=".HomePage" />
+        <activity android:name=".tracks"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
