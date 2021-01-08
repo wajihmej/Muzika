@@ -1,10 +1,5 @@
 package tn.example.muzika;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,27 +7,48 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.spotify.android.appremote.api.ConnectionParams;
-import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.Connector.ConnectionListener;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
-import tn.example.muzika.models.user;
 import tn.example.muzika.utils.SessionManager;
 
 public class HomePage extends AppCompatActivity {
 
-    private SessionManager sessionManager;
-    public static SpotifyAppRemote mSpotifyAppRemote;
     private static final int REQUEST_CODE = 1337;
     private static final String REDIRECT_URI = "https://nameless-cliffs-25074.herokuapp.com/";
     private static final String CLIENT_ID = "fe584e15ac8847edaa874f527f1a8436";
-
-
+    public static SpotifyAppRemote mSpotifyAppRemote;
+    private SessionManager sessionManager;
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Fragment selectedFragment = null;
+                    switch (item.getItemId()) {
+                        case R.id.nav_home:
+                            selectedFragment = new FragmentHome();
+                            break;
+                        case R.id.nav_fav:
+                            selectedFragment = new FragmentFeatured();
+                            break;
+                        case R.id.nav_profile:
+                            selectedFragment = new FragmentProfile();
+                            break;
+                    }
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            selectedFragment).commit();
+                    return true;
+                }
+            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +84,6 @@ public class HomePage extends AppCompatActivity {
         }
 
 
-
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new FragmentHome()).commit();
@@ -83,28 +98,6 @@ public class HomePage extends AppCompatActivity {
         inflater.inflate(R.menu.top_navigation, menu);
         return true;
     }
-
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    Fragment selectedFragment = null;
-                    switch (item.getItemId()) {
-                        case R.id.nav_home:
-                            selectedFragment = new FragmentHome();
-                            break;
-                        case R.id.nav_fav:
-                            selectedFragment = new FragmentFeatured();
-                            break;
-                        case R.id.nav_profile:
-                            selectedFragment = new FragmentProfile();
-                            break;
-                    }
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            selectedFragment).commit();
-                    return true;
-                }
-            };
 
     public void getSpotifyAccessToken() {
         AuthenticationRequest.Builder builder =

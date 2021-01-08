@@ -1,9 +1,5 @@
 package tn.example.muzika.models;
 
-import android.util.JsonReader;
-
-import com.google.gson.JsonObject;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,7 +13,7 @@ public class user {
     public user() {
     }
 
-    public user(String id, String username, String email, String token,String spotifyToken,String image) {
+    public user(String id, String username, String email, String token, String spotifyToken, String image) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -34,7 +30,7 @@ public class user {
             u.username = jsonObject.getString("username");
             u.email = jsonObject.getString("email");
             u.token = jsonObject.getString("accessToken");
-            } catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
@@ -46,7 +42,7 @@ public class user {
         return username;
     }
 
-    public void setUsername( String username) {
+    public void setUsername(String username) {
         this.username = username;
     }
 
@@ -54,7 +50,7 @@ public class user {
         return email;
     }
 
-    public void setEmail( String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
@@ -73,7 +69,6 @@ public class user {
     public void setId(String id) {
         this.id = id;
     }
-
 
 
     public String getSpotifyToken() {

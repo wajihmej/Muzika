@@ -1,8 +1,5 @@
 package tn.example.muzika;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,29 +7,29 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import org.json.JSONObject;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
-import com.google.android.material.textfield.TextInputEditText;
-import org.w3c.dom.Text;
 
 import okhttp3.Headers;
-
 import tn.example.muzika.models.user;
 
 public class Register extends AppCompatActivity {
 
     Button Register;
-    EditText username,email,tel,password;
+    EditText username, email, tel, password;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        username = (EditText)findViewById(R.id.usernamereg);
-        email = (EditText)findViewById(R.id.emailreg);
-        tel = (EditText)findViewById(R.id.telreg);
-        password = (EditText)findViewById(R.id.passwordreg);
+        username = (EditText) findViewById(R.id.usernamereg);
+        email = (EditText) findViewById(R.id.emailreg);
+        tel = (EditText) findViewById(R.id.telreg);
+        password = (EditText) findViewById(R.id.passwordreg);
 
         Register = findViewById(R.id.registerb);
 
@@ -46,14 +43,13 @@ public class Register extends AppCompatActivity {
 
     }
 
-    user register(Intent intent)
-    {
+    user register(Intent intent) {
         AsyncHttpClient client = new AsyncHttpClient();
         final user[] loggedUser = new user[1];
         client.post("https://nameless-cliffs-25074.herokuapp.com/api/auth/signup",
-                "{\"username\" : \""+username.getText().toString()+"\",\n" +
-                        "    \"email\" : \""+email.getText().toString()+"\",\n" +
-                        "    \"password\" : \""+password.getText().toString()+"\"}"
+                "{\"username\" : \"" + username.getText().toString() + "\",\n" +
+                        "    \"email\" : \"" + email.getText().toString() + "\",\n" +
+                        "    \"password\" : \"" + password.getText().toString() + "\"}"
                 , new JsonHttpResponseHandler() {
 
 
@@ -65,7 +61,6 @@ public class Register extends AppCompatActivity {
                         Intent intent = new Intent(Register.this, Login.class);
                         startActivity(intent);
                     }
-
 
 
                     @Override

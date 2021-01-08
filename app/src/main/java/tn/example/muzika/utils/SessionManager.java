@@ -3,20 +3,9 @@ package tn.example.muzika.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 
-import androidx.annotation.Nullable;
-
-import com.codepath.asynchttpclient.AsyncHttpClient;
-import com.codepath.asynchttpclient.RequestHeaders;
-import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.spotify.sdk.android.authentication.LoginActivity;
 
-import org.json.JSONException;
-
-import okhttp3.Headers;
-import tn.example.muzika.FragmentProfile;
-import tn.example.muzika.models.UserDetails;
 import tn.example.muzika.models.user;
 
 public class SessionManager {
@@ -41,6 +30,7 @@ public class SessionManager {
      * All Shared Preferences Keys
      */
     private static final String IS_LOGIN = "IsLoggedIn";
+    public static boolean isLoggedIn;
     /**
      * Shared Preferences
      */
@@ -58,10 +48,6 @@ public class SessionManager {
      */
     int PRIVATE_MODE = 0;
 
-
-
-    public static boolean isLoggedIn;
-
     /**
      * Constructor
      */
@@ -69,15 +55,15 @@ public class SessionManager {
         this._context = context;
         pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = pref.edit();
-        isLoggedIn = pref.getBoolean(IS_LOGIN,false);
+        isLoggedIn = pref.getBoolean(IS_LOGIN, false);
     }
 
     /**
      * Create login session
      */
-    public void createLoginSession(String id,String name, String email,String token) {
+    public void createLoginSession(String id, String name, String email, String token) {
         editor.putBoolean(IS_LOGIN, true);
-        editor.putString(KEY_ID,id);
+        editor.putString(KEY_ID, id);
         editor.putString(KEY_NAME, name);
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_TOKEN, token);
@@ -91,7 +77,7 @@ public class SessionManager {
     public user getUserDetails() {
         user user = new user();
 
-        user.setId(pref.getString(KEY_ID,null));
+        user.setId(pref.getString(KEY_ID, null));
 // user name
         user.setUsername(pref.getString(KEY_NAME, null));
 // user email id
@@ -139,9 +125,8 @@ public class SessionManager {
         _context.startActivity(i);
     }
 
-    public void setToken(String token)
-    {
-        editor.putString(KEY_SPOTIFY,token);
+    public void setToken(String token) {
+        editor.putString(KEY_SPOTIFY, token);
         editor.commit();
     }
 

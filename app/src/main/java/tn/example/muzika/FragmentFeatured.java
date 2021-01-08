@@ -51,7 +51,7 @@ public class FragmentFeatured extends Fragment {
         progressDialog.setContentView(R.layout.custom_dialog);
         progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-        featuredAdapter adapter = new featuredAdapter(this.getContext(),progressDialog);
+        featuredAdapter adapter = new featuredAdapter(this.getContext(), progressDialog);
         recyclerView.setAdapter(adapter);
         return rootView;
     }
@@ -61,9 +61,10 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
     private static ArrayList<Playlist> playlists;
     Context context;
     featuredAdapter adapter = this;
-    featuredAdapter(Context context,ProgressDialog progressDialog) {
+
+    featuredAdapter(Context context, ProgressDialog progressDialog) {
         this.context = context;
-        getData(context,progressDialog);
+        getData(context, progressDialog);
     }
 
     @NonNull
@@ -85,8 +86,8 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
         ImageButton shareButton = (ImageButton) holder.itemView.findViewById(R.id.shareButton);
         //GO TO MUSIC LIST
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(this.context,tracks.class);
-            intent.putExtra("url",playlists.get(position).getTracksHref());
+            Intent intent = new Intent(this.context, tracks.class);
+            intent.putExtra("url", playlists.get(position).getTracksHref());
             context.startActivity(intent);
         });
         shareButton.setOnClickListener(v -> {
@@ -97,8 +98,8 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
             final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
             popupView.findViewById(R.id.Share).setOnClickListener(v1 -> {
                 EditText postEdit = (EditText) popupView.findViewById(R.id.postText);
-                Log.d("Post Content", "onBindViewHolder: "+postEdit.getText().toString());
-                sharePost(holder.itemView.getContext(),position,postEdit.getText().toString(),popupWindow);
+                Log.d("Post Content", "onBindViewHolder: " + postEdit.getText().toString());
+                sharePost(holder.itemView.getContext(), position, postEdit.getText().toString(), popupWindow);
 
             });
             popupView.findViewById(R.id.Cancel).setOnClickListener(v12 -> {
@@ -109,45 +110,44 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
 
         ImageButton playButton = (ImageButton) holder.itemView.findViewById(R.id.play);
         playButton.setOnClickListener(v -> {
-           if(HomePage.mSpotifyAppRemote != null)
-               MainActivity.mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:"+playlists.get(position).getId());
+            if (HomePage.mSpotifyAppRemote != null)
+                MainActivity.mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:" + playlists.get(position).getId());
         });
     }
 
 
     @Override
     public int getItemCount() {
-        if(playlists == null)
+        if (playlists == null)
             return 0;
         else
             return playlists.size();
     }
 
 
-
-    void sharePost(Context cntx,int position,String postContent,PopupWindow window){
+    void sharePost(Context cntx, int position, String postContent, PopupWindow window) {
         AsyncHttpClient client = new AsyncHttpClient();
         SessionManager sessionManager = new SessionManager(cntx);
         String userId = sessionManager.getUserDetails().getId();
         String playlistId = playlists.get(position).getId();
         String body = "{\n" +
-                "    \"postContent\" : \""+postContent+"\",\n" +
-                "    \"playlistId\" : \""+playlistId+"\"\n}";
-        client.post("https://nameless-cliffs-25074.herokuapp.com/api/posts/add/"+userId, body, new JsonHttpResponseHandler() {
+                "    \"postContent\" : \"" + postContent + "\",\n" +
+                "    \"playlistId\" : \"" + playlistId + "\"\n}";
+        client.post("https://nameless-cliffs-25074.herokuapp.com/api/posts/add/" + userId, body, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
-                Log.d("Post response", "onSuccess: "+json.toString());
+                Log.d("Post response", "onSuccess: " + json.toString());
                 window.dismiss();
             }
 
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                Log.d("Post response", "onFailure: "+response);
+                Log.d("Post response", "onFailure: " + response);
             }
         });
     }
 
-    void getData(Context cntx,ProgressDialog progressDialog) {
+    void getData(Context cntx, ProgressDialog progressDialog) {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestHeaders requestHeaders = new RequestHeaders();
         SessionManager sessionManager = new SessionManager(cntx);
@@ -179,6 +179,7 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
         private final TextView title;
         private final TextView description;
         private final ImageView imageplaylist;
+
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View

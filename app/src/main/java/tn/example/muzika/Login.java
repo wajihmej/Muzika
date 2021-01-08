@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,9 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
-import com.spotify.sdk.android.authentication.AuthenticationClient;
-import com.spotify.sdk.android.authentication.AuthenticationRequest;
-import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
 import org.json.JSONObject;
 
@@ -32,15 +28,14 @@ import tn.example.muzika.utils.SessionManager;
 
 public class Login extends AppCompatActivity {
 
-    private Activity app = this;
     Button Register, Login, spotifyLogin;
     EditText username, password;
     SharedPreferences pref;
     SessionManager sessionManager;
-
-
     //Dialog
     Dialog dialog;
+    private Activity app = this;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,7 +107,6 @@ public class Login extends AppCompatActivity {
     }
 
 
-
     void login(LoadingDialog loadingDialog) {
         AsyncHttpClient client = new AsyncHttpClient();
         final user[] loggedUser = new user[1];
@@ -125,7 +119,7 @@ public class Login extends AppCompatActivity {
                         JSONObject userJson = json.jsonObject;
                         loggedUser[0] = user.fromJson(userJson);
                         Log.d("USER JSON STRING", json.toString());
-                        sessionManager.createLoginSession(loggedUser[0].getId(),loggedUser[0].getUsername(), loggedUser[0].getEmail(), loggedUser[0].getToken());
+                        sessionManager.createLoginSession(loggedUser[0].getId(), loggedUser[0].getUsername(), loggedUser[0].getEmail(), loggedUser[0].getToken());
                         loadingDialog.startLoadingDialog();
                         success();
                     }
@@ -141,9 +135,6 @@ public class Login extends AppCompatActivity {
     }
 
 
-
-
-
     void success() {
         Intent intent = new Intent(Login.this, HomePage.class);
         startActivity(intent);
@@ -151,7 +142,7 @@ public class Login extends AppCompatActivity {
 
 
     //dialog
-    private void OpenErreurDialog(String errorResponse){
+    private void OpenErreurDialog(String errorResponse) {
         dialog.setContentView(R.layout.erreur_dialog);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         Button tryagain = dialog.findViewById(R.id.tryagainbutton);
@@ -164,7 +155,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                Toast.makeText(Login.this,"OUPS!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(Login.this, "OUPS!", Toast.LENGTH_SHORT).show();
             }
         });
         dialog.show();

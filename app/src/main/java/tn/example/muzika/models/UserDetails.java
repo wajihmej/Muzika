@@ -21,7 +21,7 @@ public class UserDetails {
         details.spotifyId = object.getString("id");
         JSONArray images = object.getJSONArray("images");
         details.imageUrl = images.getJSONObject(0).getString("url");
-        Log.d("User details class : ", "detailsFromJson: "+details.toString());
+        Log.d("User details class : ", "detailsFromJson: " + details.toString());
         return details;
     }
 

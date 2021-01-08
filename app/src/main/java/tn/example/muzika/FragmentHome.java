@@ -1,6 +1,5 @@
 package tn.example.muzika;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -18,10 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
-import com.codepath.asynchttpclient.RequestHeaders;
-import com.codepath.asynchttpclient.RequestParams;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
-import com.google.gson.JsonParser;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -30,32 +26,37 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import okhttp3.Credentials;
 import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import tn.example.muzika.models.Playlist;
 import tn.example.muzika.models.Post;
 import tn.example.muzika.utils.SessionManager;
 
 public class FragmentHome extends Fragment {
 
 
-   private RecyclerView recyclerView;
+    private RecyclerView recyclerView;
+    private RecyclerView CommentView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_home,container,false);
+        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.featuredRecycler);
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
         recyclerView.setAdapter(new homeAdapter(this.getContext()));
+
+       /* CommentView = (RecyclerView) rootView.findViewById(R.id.commentsRecyclerView);
+        CommentView.setHasFixedSize(true);
+        CommentView.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
+        CommentView.setAdapter(new commentAdapter(this.getContext()));*/
+
         int SDK_INT = android.os.Build.VERSION.SDK_INT;
-        if (SDK_INT > 8)
-        {
+        if (SDK_INT > 8) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                     .permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -64,7 +65,7 @@ public class FragmentHome extends Fragment {
     }
 }
 
-class homeAdapter extends RecyclerView.Adapter<homeAdapter.ViewHolder>{
+class homeAdapter extends RecyclerView.Adapter<homeAdapter.ViewHolder> {
 
     ArrayList<Post> posts = new ArrayList<>();
     homeAdapter adapter = this;
@@ -74,6 +75,7 @@ class homeAdapter extends RecyclerView.Adapter<homeAdapter.ViewHolder>{
     public homeAdapter(Context context) {
         sessionManager = new SessionManager(context);
         getPosts(context);
+
     }
 
     @NonNull
@@ -95,8 +97,8 @@ class homeAdapter extends RecyclerView.Adapter<homeAdapter.ViewHolder>{
     }
 
     private void getPlaylistImage(String playlist, ViewHolder holder) throws IOException, JSONException {
-        Request request = new Request.Builder().url("https://api.spotify.com/v1/playlists/"+playlist)
-                .header("Authorization" , "Bearer "+sessionManager.getUserDetails().getSpotifyToken())
+        Request request = new Request.Builder().url("https://api.spotify.com/v1/playlists/" + playlist)
+                .header("Authorization", "Bearer " + sessionManager.getUserDetails().getSpotifyToken())
                 .build();
         Response response = client.newCall(request).execute();
         JSONObject obj = new JSONObject(response.body().string());
@@ -106,32 +108,32 @@ class homeAdapter extends RecyclerView.Adapter<homeAdapter.ViewHolder>{
         holder.playlistName.setText(name);
     }
 
-    private void getUserImage(String userId){
-        Request request = new Request.Builder().url("https://api.spotify.com/v1/users/"+userId)
-                .header("Authorization" , "Bearer "+sessionManager.getUserDetails().getSpotifyToken())
+    private void getUserImage(String userId) {
+        Request request = new Request.Builder().url("https://api.spotify.com/v1/users/" + userId)
+                .header("Authorization", "Bearer " + sessionManager.getUserDetails().getSpotifyToken())
                 .build();
-
     }
 
     @Override
     public int getItemCount() {
-        return posts.isEmpty()? 0 : posts.size();
+        return posts.isEmpty() ? 0 : posts.size();
     }
 
     void getPosts(Context cntx) {
-         AsyncHttpClient client = new AsyncHttpClient();
-         client.get("https://nameless-cliffs-25074.herokuapp.com/api/posts/friendsPosts/"+sessionManager.getUserDetails().getId()
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get("https://nameless-cliffs-25074.herokuapp.com/api/posts/friendsPosts/" + sessionManager.getUserDetails().getId()
                 , new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         try {
                             posts = Post.postFromJson(json.jsonArray);
                             adapter.notifyDataSetChanged();
-                            Log.d("FragmentHome", "onSuccess: "+posts.toString());
+                            Log.d("FragmentHome", "onSuccess: " + posts.toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
+
                     @Override
                     public void onFailure(int statusCode, @Nullable Headers headers, String errorResponse, @Nullable Throwable throwable) {
                         Log.d("DEBUG", errorResponse);
@@ -141,8 +143,8 @@ class homeAdapter extends RecyclerView.Adapter<homeAdapter.ViewHolder>{
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView postContent ;
-        ImageView profileImage ;
+        TextView postContent;
+        ImageView profileImage;
         ImageView playlistImage;
         TextView playlistName;
 
@@ -156,12 +158,20 @@ class homeAdapter extends RecyclerView.Adapter<homeAdapter.ViewHolder>{
     }
 }
 
-class postAdapter extends RecyclerView.Adapter<postAdapter.ViewHolder>{
+class commentAdapter extends RecyclerView.Adapter<commentAdapter.ViewHolder> {
+
+    Context context;
+
+    public commentAdapter(Context context) {
+        this.context = context;
+    }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.comment_adapter, parent, false);
+        return new commentAdapter.ViewHolder(view);
     }
 
     @Override
@@ -177,6 +187,6 @@ class postAdapter extends RecyclerView.Adapter<postAdapter.ViewHolder>{
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(View view) {
             super(view);
-         }
+        }
     }
 }
