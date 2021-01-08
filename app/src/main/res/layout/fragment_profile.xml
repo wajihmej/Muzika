@@ -3,106 +3,142 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
 
-    <ImageView
-        android:id="@+id/profileImage"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <TextView
-        android:id="@+id/profileName"
-        android:layout_width="100dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="25dp"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileImage" />
-
-    <Button
-        android:id="@+id/myplaylists"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="10dp"
-        android:text="My playlists"
-        android:textAlignment="viewStart"
-        android:textColor="@color/white"
-        app:cornerRadius="25dp"
-        app:icon="@android:drawable/ic_media_play"
-        app:iconSize="200dp"
-        app:iconTint="#D7AD60"
-        app:layout_constraintBottom_toTopOf="@+id/favorites"
-        app:layout_constraintEnd_toStartOf="@+id/liked"
-        app:layout_constraintHorizontal_bias="0.16"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileName" />
-
-    <Button
-        android:id="@+id/liked"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="10dp"
-        app:cornerRadius="25dp"
-        app:icon="@drawable/favorite_black_18dp"
-        app:iconSize="160dp"
-        app:iconTint="#F44336"
-        app:layout_constraintBottom_toTopOf="@+id/profile"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/myplaylists"
-        app:layout_constraintTop_toBottomOf="@+id/profileName" />
-
-    <Button
-        android:id="@+id/favorites"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="25dp"
-        app:cornerRadius="25dp"
-        app:icon="@drawable/bookmark_black_18dp"
-        app:iconSize="160dp"
-        app:iconTint="#2196F3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/profile"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/myplaylists" />
-
-    <Button
-        android:id="@+id/profile"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="25dp"
-        app:cornerRadius="25dp"
-        app:icon="@drawable/ic_baseline_account_circle_24"
-        app:iconSize="150dp"
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/favorites"
-        app:layout_constraintTop_toBottomOf="@+id/liked" />
-
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="My Space"
-        android:textSize="32sp"
-        app:layout_constraintBottom_toTopOf="@+id/myplaylists"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileName" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/profileImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/profileName"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="32dp"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="match_parent"
+                android:layout_height="43dp"
+                android:layout_marginTop="32dp"
+                android:gravity="center"
+                android:text="My Space"
+                android:textSize="32sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profileName" />
+
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginTop="32dp"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView6">
+
+                <Button
+                    android:id="@+id/myplaylists"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="25dp"
+                    android:layout_weight="1"
+                    android:textColor="@color/white"
+                    app:cornerRadius="25dp"
+                    app:icon="@android:drawable/ic_media_play"
+                    app:iconSize="170dp"
+                    app:iconTint="#D7AD60" />
+
+                <Button
+                    android:id="@+id/liked"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="25dp"
+                    android:layout_weight="1"
+                    android:textAlignment="viewStart"
+                    app:cornerRadius="25dp"
+                    app:icon="@drawable/favorite_black_18dp"
+                    app:iconSize="150dp"
+                    app:iconTint="#F44336" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="32dp"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+                <Button
+                    android:id="@+id/favorites"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="25dp"
+                    android:layout_weight="1"
+                    app:cornerRadius="25dp"
+                    app:icon="@drawable/bookmark_black_18dp"
+                    app:iconSize="160dp"
+                    app:iconTint="#2196F3" />
+
+                <Button
+                    android:id="@+id/profile"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="25dp"
+                    android:layout_weight="1"
+                    app:cornerRadius="25dp"
+                    app:icon="@drawable/ic_baseline_account_circle_24"
+                    app:iconSize="150dp" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </LinearLayout>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

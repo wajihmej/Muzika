@@ -17,10 +17,19 @@ public class UserDetails {
 
     public static UserDetails detailsFromJson(JSONObject object) throws JSONException {
         UserDetails details = new UserDetails();
+        Log.d("USERRRR", object.toString());
         details.displayName = object.getString("display_name");
         details.spotifyId = object.getString("id");
         JSONArray images = object.getJSONArray("images");
-        details.imageUrl = images.getJSONObject(0).getString("url");
+       /* if(images.toString()==""){
+            details.imageUrl = "";
+        }
+        else
+        {
+            details.imageUrl = images.getJSONObject(0).getString("url");
+        }*/
+        details.imageUrl = "";
+
         Log.d("User details class : ", "detailsFromJson: " + details.toString());
         return details;
     }

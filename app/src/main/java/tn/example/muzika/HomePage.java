@@ -1,6 +1,7 @@
 package tn.example.muzika;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -21,6 +22,8 @@ import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
 import tn.example.muzika.utils.SessionManager;
 
+import static tn.example.muzika.Login.FILE_NAME;
+
 public class HomePage extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 1337;
@@ -28,6 +31,8 @@ public class HomePage extends AppCompatActivity {
     private static final String CLIENT_ID = "fe584e15ac8847edaa874f527f1a8436";
     public static SpotifyAppRemote mSpotifyAppRemote;
     private SessionManager sessionManager;
+    SharedPreferences sharedPreferences;
+
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -56,6 +61,8 @@ public class HomePage extends AppCompatActivity {
         setContentView(R.layout.activity_home_page);
         sessionManager = new SessionManager(getApplicationContext());
         getSpotifyAccessToken();
+        sharedPreferences = getSharedPreferences(FILE_NAME,MODE_PRIVATE);
+
         Log.d("USER LOG", sessionManager.getUserDetails().toString());
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);

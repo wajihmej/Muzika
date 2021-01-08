@@ -36,6 +36,9 @@ public class Login extends AppCompatActivity {
     Dialog dialog;
     private Activity app = this;
 
+    SharedPreferences sharedPreferences ;
+    public static String FILE_NAME = "com.exemple.muzika.sp";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +53,13 @@ public class Login extends AppCompatActivity {
         username = (EditText) findViewById(R.id.userName);
         password = (EditText) findViewById(R.id.password);
         Log.d("Spotify App remote", "appRemote.isConnected()");
+        sharedPreferences = getSharedPreferences(FILE_NAME,MODE_PRIVATE);
+        if(!sharedPreferences.getString("LOGIN","").isEmpty())
+        {
+            Intent intent = new Intent(Login.this,HomePage.class);
+            startActivity(intent);
+            finish();
+        }
 
         //dialog
         dialog = new Dialog(this);
@@ -121,7 +131,12 @@ public class Login extends AppCompatActivity {
                         Log.d("USER JSON STRING", json.toString());
                         sessionManager.createLoginSession(loggedUser[0].getId(), loggedUser[0].getUsername(), loggedUser[0].getEmail(), loggedUser[0].getToken());
                         loadingDialog.startLoadingDialog();
-                        success();
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("LOGIN",loggedUser[0].getToken());
+                        editor.apply();
+
+                        success(loadingDialog);
+
                     }
 
                     @Override
@@ -135,9 +150,10 @@ public class Login extends AppCompatActivity {
     }
 
 
-    void success() {
+    void success(LoadingDialog loadingDialog) {
         Intent intent = new Intent(Login.this, HomePage.class);
         startActivity(intent);
+        finish();
     }
 
 
