@@ -35,7 +35,6 @@ public class FragmentProfile extends Fragment {
     TextView profileName;
     ImageView profileImage;
     SharedPreferences sharedPreferences;
-    ImageButton lougoutbtn;
 
     @Nullable
     @Override
@@ -49,14 +48,7 @@ public class FragmentProfile extends Fragment {
 
         profileName = view.findViewById(R.id.profileName);
         profileImage = view.findViewById(R.id.profileImage);
-        lougoutbtn = view.findViewById(R.id.logoutbnt);
 
-        lougoutbtn.setOnClickListener(v -> {
-            sharedPreferences.edit().clear().apply();
-            this.getActivity().finish();
-
-
-        });
         return view;
     }
 

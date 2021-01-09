@@ -9,6 +9,7 @@
         android:menuCategory="system"
         android:orderInCategory="100"
         android:title="Logout"
+        android:onClick="Logout"
         android:visible="true"
         app:showAsAction="always" />
 </menu>

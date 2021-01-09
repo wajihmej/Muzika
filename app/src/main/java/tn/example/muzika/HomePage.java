@@ -147,4 +147,9 @@ public class HomePage extends AppCompatActivity {
         }
     }
 
+    public void Logout(MenuItem item) {
+        sharedPreferences.edit().clear().apply();
+        finish();
+
+    }
 }

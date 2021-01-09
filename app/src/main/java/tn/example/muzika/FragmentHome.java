@@ -137,6 +137,7 @@ class homeAdapter extends RecyclerView.Adapter<homeAdapter.ViewHolder> {
                             posts = Post.postFromJson(json.jsonArray);
                             adapter.notifyDataSetChanged();
                             Log.d("FragmentHome", "onSuccess: " + posts.toString());
+                            progressDialog.dismiss();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
