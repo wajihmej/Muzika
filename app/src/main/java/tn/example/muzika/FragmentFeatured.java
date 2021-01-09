@@ -18,7 +18,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -77,7 +80,7 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
         return new ViewHolder(view);
     }
 
-
+    HomePage hp ;
     @Override
     public void onBindViewHolder(@NonNull featuredAdapter.ViewHolder holder, int position) {
         holder.title.setText(playlists.get(position).getName());
@@ -86,9 +89,24 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
         ImageButton shareButton = (ImageButton) holder.itemView.findViewById(R.id.shareButton);
         //GO TO MUSIC LIST
         holder.itemView.setOnClickListener(v -> {
+
+            Bundle bundle = new Bundle();
+            bundle.putString("url", playlists.get(position).getTracksHref());
+
+            FragmentTracks tracksfrag= new FragmentTracks();
+            tracksfrag.setArguments(bundle);
+            FragmentManager manager = ((AppCompatActivity)context).getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.fragment_container,tracksfrag);
+            transaction.commit();
+
+
+            /*
             Intent intent = new Intent(this.context, tracks.class);
             intent.putExtra("url", playlists.get(position).getTracksHref());
             context.startActivity(intent);
+            */
+
         });
         shareButton.setOnClickListener(v -> {
             View popupView = LayoutInflater.from(holder.itemView.getContext()).inflate(R.layout.share_popup, null);
