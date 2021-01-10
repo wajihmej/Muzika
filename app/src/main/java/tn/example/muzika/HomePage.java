@@ -1,12 +1,19 @@
 package tn.example.muzika;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +41,8 @@ public class HomePage extends AppCompatActivity {
     public static SpotifyAppRemote mSpotifyAppRemote;
     private SessionManager sessionManager;
     SharedPreferences sharedPreferences;
+    //Dialog
+    Dialog dialog;
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -49,6 +58,9 @@ public class HomePage extends AppCompatActivity {
                             break;
                         case R.id.nav_profile:
                             selectedFragment = new FragmentProfile();
+                            break;
+                        case R.id.nav_search :
+                            selectedFragment = new FragmentSearch();
                             break;
                     }
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
@@ -145,7 +157,9 @@ public class HomePage extends AppCompatActivity {
                 case ERROR:
                     Log.d("Token retrieval error", response.getError());
                     // Handle error response
+                    dialog = new Dialog(HomePage.this);
 
+                    OpenErreurDialog(response.getError());
 
 
                     break;
@@ -164,5 +178,30 @@ public class HomePage extends AppCompatActivity {
         finish();
 
 
+    }
+
+    //dialog
+    private void OpenErreurDialog(String errorResponse) {
+        dialog.setContentView(R.layout.erreur_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Button tryagain = dialog.findViewById(R.id.tryagainbutton);
+        TextView text = dialog.findViewById(R.id.Ereurtext);
+        text.setText(errorResponse);
+        tryagain.setText("Reconnect");
+        /*
+        if(errorResponse.equals("{\"message\":\"User Not found.\"}"))
+        text.setText("User Not found.");
+        */
+        tryagain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Toast.makeText(HomePage.this, "OUPS!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(HomePage.this,Login.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        dialog.show();
     }
 }
