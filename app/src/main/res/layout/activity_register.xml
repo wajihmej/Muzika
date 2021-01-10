@@ -10,8 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:layout_editor_absoluteX="148dp"
-        tools:layout_editor_absoluteY="136dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -61,20 +63,6 @@
             android:ems="10"
             android:hint="Email"
             android:inputType="textEmailAddress" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-
-        <EditText
-            android:id="@+id/telreg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40sp"
-            android:layout_marginRight="40sp"
-            android:ems="10"
-            android:hint="Phone number"
-            android:inputType="phone" />
 
         <Space
             android:layout_width="match_parent"

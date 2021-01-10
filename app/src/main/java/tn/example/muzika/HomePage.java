@@ -29,7 +29,7 @@ import static tn.example.muzika.Login.FILE_NAME;
 public class HomePage extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 1337;
-    private static final String REDIRECT_URI = "https://nameless-cliffs-25074.herokuapp.com/";
+        private static final String REDIRECT_URI = "https://nameless-cliffs-25074.herokuapp.com/";
     private static final String CLIENT_ID = "fe584e15ac8847edaa874f527f1a8436";
     public static SpotifyAppRemote mSpotifyAppRemote;
     private SessionManager sessionManager;
@@ -70,6 +70,20 @@ public class HomePage extends AppCompatActivity {
         bottomNav.setOnNavigationItemSelectedListener(navListener);
         //I added this if statement to keep the selected fragment when rotating the device
 
+
+
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new FragmentHome()).commit();
+        }
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         ConnectionParams connectionParams =
                 new ConnectionParams.Builder(CLIENT_ID)
                         .setRedirectUri(REDIRECT_URI)
@@ -82,6 +96,7 @@ public class HomePage extends AppCompatActivity {
                         public void onConnected(SpotifyAppRemote spotifyAppRemote) {
                             mSpotifyAppRemote = spotifyAppRemote;
                             Log.d("HomePage", "Connected! Yay!");
+
                         }
 
                         @Override
@@ -91,13 +106,6 @@ public class HomePage extends AppCompatActivity {
                         }
                     });
         }
-
-
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new FragmentHome()).commit();
-        }
-
 
     }
 
@@ -111,7 +119,6 @@ public class HomePage extends AppCompatActivity {
     public void getSpotifyAccessToken() {
         AuthenticationRequest.Builder builder =
                 new AuthenticationRequest.Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI);
-
         builder.setScopes(new String[]{"streaming"});
         AuthenticationRequest request = builder.build();
 
@@ -123,13 +130,13 @@ public class HomePage extends AppCompatActivity {
         // Check if result comes from the correct activity
         if (requestCode == REQUEST_CODE) {
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
-
+            SharedPreferences.Editor editor;
             switch (response.getType()) {
                 // Response was successful and contains auth token
                 case TOKEN:
                     Log.d("Token", response.getAccessToken());
                     sessionManager.setToken(response.getAccessToken());
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                     editor = sharedPreferences.edit();
                         editor.putString("LOGIN",response.getAccessToken());
                         editor.apply();
                     //this.setToken(response.getAccessToken());
@@ -138,6 +145,9 @@ public class HomePage extends AppCompatActivity {
                 case ERROR:
                     Log.d("Token retrieval error", response.getError());
                     // Handle error response
+
+
+
                     break;
 
                 // Most likely auth flow was cancelled
@@ -149,7 +159,10 @@ public class HomePage extends AppCompatActivity {
 
     public void Logout(MenuItem item) {
         sharedPreferences.edit().clear().apply();
+        Intent intent = new Intent(HomePage.this,Login.class);
+        startActivity(intent);
         finish();
+
 
     }
 }

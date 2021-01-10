@@ -80,7 +80,6 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
         return new ViewHolder(view);
     }
 
-    HomePage hp ;
     @Override
     public void onBindViewHolder(@NonNull featuredAdapter.ViewHolder holder, int position) {
         holder.title.setText(playlists.get(position).getName());
@@ -126,8 +125,7 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
             popupWindow.showAtLocation(holder.itemView, Gravity.CENTER, 0, 0);
         });
 
-        ImageButton playButton = (ImageButton) holder.itemView.findViewById(R.id.play);
-        playButton.setOnClickListener(v -> {
+        holder.play.setOnClickListener(v -> {
             if (HomePage.mSpotifyAppRemote != null)
                 MainActivity.mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:" + playlists.get(position).getId());
         });
@@ -169,6 +167,7 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
         AsyncHttpClient client = new AsyncHttpClient();
         RequestHeaders requestHeaders = new RequestHeaders();
         SessionManager sessionManager = new SessionManager(cntx);
+        Log.d("eeeeeeeeeeeeee", sessionManager.getUserDetails().getSpotifyToken());
         requestHeaders.put("Authorization", "Bearer " + sessionManager.getUserDetails().getSpotifyToken());
         RequestParams request = new RequestParams();
         client.get("https://api.spotify.com/v1/browse/featured-playlists", requestHeaders, request
@@ -197,6 +196,7 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
         private final TextView title;
         private final TextView description;
         private final ImageView imageplaylist;
+        private final ImageButton play;
 
         public ViewHolder(View view) {
             super(view);
@@ -204,6 +204,7 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
             title = (TextView) view.findViewById(R.id.playlistNameView);
             description = (TextView) view.findViewById(R.id.descriptionTextView);
             imageplaylist = (ImageView) view.findViewById(R.id.playlistImageView);
+            play = (ImageButton) view.findViewById(R.id.play);
         }
 
         public TextView getTextView() {

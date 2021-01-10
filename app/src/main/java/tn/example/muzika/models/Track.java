@@ -44,6 +44,31 @@ public class Track {
         return finalList;
     }
 
+    public static ArrayList fromJsonFav(JSONObject jsonObject) {
+
+        ArrayList finalList = new ArrayList();
+        try {
+            JSONArray track  = jsonObject.getJSONArray("items") ;
+
+            Log.d("TEST TEST ", track.toString());
+            for (int i=0 ; i<track.length() ; i++) {
+                JSONObject item  = track.getJSONObject(i);
+
+                Track tracks = new Track();
+
+                tracks.setName(item.getString("name"));
+                tracks.setImage(item.getJSONArray("images").getJSONObject(0).getString("url"));
+                tracks.setArtname(item.getJSONObject("owner").getString("display_name"));
+                finalList.add(tracks);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        };
+        // Return new object
+        return finalList;
+    }
+
     @Override
     public String toString() {
         return "Track{" +

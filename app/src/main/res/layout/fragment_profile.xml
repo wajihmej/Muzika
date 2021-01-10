@@ -11,9 +11,10 @@
     <ImageView
         android:id="@+id/profileImage"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:src="@drawable/ic_baseline_account_circle_24"
+        android:layout_height="100dp"
+        android:layout_marginTop="16dp"
 
+        android:src="@drawable/ic_baseline_account_circle_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -35,7 +36,7 @@
         android:id="@+id/textView6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="My Space"
         android:textSize="24sp"
@@ -99,16 +100,16 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Favorites"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:layout_weight="1"/>
+                android:text="Favorites" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Likes"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:layout_weight="1"/>
+                android:text="Likes" />
 
         </LinearLayout>
     </LinearLayout>
@@ -117,7 +118,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="70dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

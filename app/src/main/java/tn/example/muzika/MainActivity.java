@@ -32,31 +32,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        context = getApplicationContext();
-        sessionManager = new SessionManager(context);
-        ConnectionParams connectionParams =
-                new ConnectionParams.Builder(CLIENT_ID)
-                        .setRedirectUri(REDIRECT_URI)
-                        .showAuthView(true)
-                        .build();
-        if (SpotifyAppRemote.isSpotifyInstalled(this)) {
-            SpotifyAppRemote.connect(this, connectionParams,
-                    new Connector.ConnectionListener() {
-                        @Override
-                        public void onConnected(SpotifyAppRemote spotifyAppRemote) {
-                            mSpotifyAppRemote = spotifyAppRemote;
-                            Log.d("MainActivity", "Connected! Yay!");
-                        }
 
-                        @Override
-                        public void onFailure(Throwable throwable) {
-                            Log.e("MainActivity", throwable.getMessage(), throwable);
-                            Intent intent = new Intent(MainActivity.this, Login.class);
-                            startActivity(intent);
-                            // Something went wrong when attempting to connect! Handle errors here
-                        }
-                    });
-        }
 
         Intent intent = new Intent(MainActivity.this, Login.class);
         startActivity(intent);
@@ -105,6 +81,31 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        context = getApplicationContext();
+        sessionManager = new SessionManager(context);
+        ConnectionParams connectionParams =
+                new ConnectionParams.Builder(CLIENT_ID)
+                        .setRedirectUri(REDIRECT_URI)
+                        .showAuthView(true)
+                        .build();
+        if (SpotifyAppRemote.isSpotifyInstalled(this)) {
+            SpotifyAppRemote.connect(this, connectionParams,
+                    new Connector.ConnectionListener() {
+                        @Override
+                        public void onConnected(SpotifyAppRemote spotifyAppRemote) {
+                            mSpotifyAppRemote = spotifyAppRemote;
+                            Log.d("MainActivity", "Connected! Yay!");
+                        }
+
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            Log.e("MainActivity", throwable.getMessage(), throwable);
+                            Intent intent = new Intent(MainActivity.this, Login.class);
+                            startActivity(intent);
+                            // Something went wrong when attempting to connect! Handle errors here
+                        }
+                    });
+        }
     }
 
     @Override

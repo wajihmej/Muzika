@@ -19,7 +19,7 @@ import tn.example.muzika.models.user;
 public class Register extends AppCompatActivity {
 
     Button Register;
-    EditText username, email, tel, password;
+    EditText username, email, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +28,6 @@ public class Register extends AppCompatActivity {
 
         username = (EditText) findViewById(R.id.usernamereg);
         email = (EditText) findViewById(R.id.emailreg);
-        tel = (EditText) findViewById(R.id.telreg);
         password = (EditText) findViewById(R.id.passwordreg);
 
         Register = findViewById(R.id.registerb);
@@ -58,8 +57,8 @@ public class Register extends AppCompatActivity {
                         //SONObject userJson = json.jsonObject;
                         //loggedUser[0] = user.fromJson(userJson);
                         //Log.d("Json" , loggedUser[0].toString());
-                        Intent intent = new Intent(Register.this, Login.class);
                         startActivity(intent);
+                        finish();
                     }
 
 

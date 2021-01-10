@@ -16,6 +16,7 @@
         android:text="Express your mind..."
         android:textAlignment="center"
         android:textSize="22sp"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,6 +27,9 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
+        android:textColor="@color/black"
+        android:hint="What's in your mind ?"
+        android:textColorHint="@color/purple_main"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

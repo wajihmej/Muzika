@@ -7,13 +7,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.RequestHeaders;
@@ -35,7 +39,7 @@ public class FragmentProfile extends Fragment {
     TextView profileName;
     ImageView profileImage;
     SharedPreferences sharedPreferences;
-
+    Button myplaylists,likes,friends,saved;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,7 +52,16 @@ public class FragmentProfile extends Fragment {
 
         profileName = view.findViewById(R.id.profileName);
         profileImage = view.findViewById(R.id.profileImage);
+        myplaylists = view.findViewById(R.id.myplaylists);
 
+        myplaylists.setOnClickListener(v -> {
+            FragmentFav tracksfrag= new FragmentFav();
+            FragmentManager manager = ((AppCompatActivity)getContext()).getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.fragment_container,tracksfrag);
+            transaction.commit();
+
+        });
         return view;
     }
 
