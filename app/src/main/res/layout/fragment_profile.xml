@@ -28,7 +28,7 @@
                 android:layout_height="200dp"
                 android:layout_marginTop="16dp"
                 android:src="@drawable/ic_baseline_account_circle_24"
-                app:civ_border_color="#FF000000"
+                app:civ_border_color="@color/creme"
                 app:civ_border_width="2dp" />
 
             <TextView
@@ -69,6 +69,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
+
                         android:layout_weight="1"
                         android:textColor="@color/white"
                         app:cornerRadius="25dp"
