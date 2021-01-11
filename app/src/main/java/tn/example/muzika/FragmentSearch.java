@@ -48,11 +48,8 @@ import tn.example.muzika.utils.SessionManager;
 public class FragmentSearch extends Fragment {
     private ArrayList<Playlist> playlists;
     private SearchAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     ProgressDialog progressDialog;
 
-    ArrayList<String> list;
-    ArrayAdapter<Playlist> adapter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

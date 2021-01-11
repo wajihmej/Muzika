@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.media.Image;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -44,11 +46,15 @@ import tn.example.muzika.utils.SessionManager;
 
 public class FragmentFeatured extends Fragment {
     ProgressDialog progressDialog;
+    private ArrayList<Playlist> playlists;
 
+    private featuredAdapter mAdapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        playlists = new ArrayList<>();
+        getData(getContext());
 
         View rootView = inflater.inflate(R.layout.fragment_featured, container, false);
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.featuredRecycler);
@@ -59,21 +65,71 @@ public class FragmentFeatured extends Fragment {
         progressDialog.show();
         progressDialog.setContentView(R.layout.custom_dialog);
         progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        mAdapter = new featuredAdapter(getContext(),progressDialog,playlists);
+        EditText editText = rootView.findViewById(R.id.searchviewfeatured);
 
-        featuredAdapter adapter = new featuredAdapter(this.getContext(), progressDialog);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(mAdapter);
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filter(s.toString());
+
+            }
+        });
+
         return rootView;
     }
-}
+
+    private void filter(String text) {
+        ArrayList<Playlist> filteredList = new ArrayList<>();
+        for (Playlist item : playlists) {
+            if (item.getName().toLowerCase().contains(text.toLowerCase())) {
+                filteredList.add(item);
+            }
+        }
+        mAdapter.filterList(filteredList);
+    }
+    void getData(Context cntx) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestHeaders requestHeaders = new RequestHeaders();
+        SessionManager sessionManager = new SessionManager(cntx);
+        requestHeaders.put("Authorization", "Bearer " + sessionManager.getUserDetails().getSpotifyToken());
+        RequestParams request = new RequestParams();
+        client.get("https://api.spotify.com/v1/browse/featured-playlists", requestHeaders, request
+                , new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Headers headers, JSON json) {
+                        Log.d("Featured Fragment", json.toString());
+                        playlists = Playlist.fromJson(json.jsonObject);
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, @Nullable Headers headers, String errorResponse, @Nullable Throwable throwable) {
+                        Log.d("DEBUG", errorResponse);
+                    }
+                });
+    }}
 
 class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> implements Runnable {
     private static ArrayList<Playlist> playlists;
     Context context;
     featuredAdapter adapter = this;
 
-    featuredAdapter(Context context, ProgressDialog progressDialog) {
+    featuredAdapter(Context context, ProgressDialog progressDialog,ArrayList<Playlist> playlists){
         this.context = context;
         getData(context, progressDialog);
+        this.playlists = playlists;
     }
 
     @NonNull
@@ -244,6 +300,12 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
     public void run() {
 
     }
+    public void filterList(ArrayList<Playlist> filteredList) {
+        playlists = filteredList;
+        notifyDataSetChanged();
+
+    }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView title;
