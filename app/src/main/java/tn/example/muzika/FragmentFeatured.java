@@ -3,6 +3,8 @@ package tn.example.muzika;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -30,11 +32,14 @@ import com.codepath.asynchttpclient.RequestHeaders;
 import com.codepath.asynchttpclient.RequestParams;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Request;
 
 import java.util.ArrayList;
 
 import okhttp3.Headers;
+import okhttp3.Response;
 import tn.example.muzika.models.Playlist;
+import tn.example.muzika.models.user;
 import tn.example.muzika.utils.SessionManager;
 
 public class FragmentFeatured extends Fragment {
@@ -49,6 +54,7 @@ public class FragmentFeatured extends Fragment {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.featuredRecycler);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
+
         progressDialog = new ProgressDialog(this.getContext());
         progressDialog.show();
         progressDialog.setContentView(R.layout.custom_dialog);
@@ -80,6 +86,8 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
         return new ViewHolder(view);
     }
 
+    int playint=0;
+    int likeint=0;
     @Override
     public void onBindViewHolder(@NonNull featuredAdapter.ViewHolder holder, int position) {
         holder.title.setText(playlists.get(position).getName());
@@ -107,6 +115,7 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
             */
 
         });
+
         shareButton.setOnClickListener(v -> {
             View popupView = LayoutInflater.from(holder.itemView.getContext()).inflate(R.layout.share_popup, null);
             int width = LinearLayout.LayoutParams.MATCH_PARENT;
@@ -125,7 +134,51 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
             popupWindow.showAtLocation(holder.itemView, Gravity.CENTER, 0, 0);
         });
 
+        holder.like.setOnClickListener(v -> {
+            if(likeint==0){
+                SessionManager sessionManager = new SessionManager(holder.itemView.getContext());
+                String userId = sessionManager.getUserDetails().getId();
+
+                AsyncHttpClient client = new AsyncHttpClient();
+
+                    client.post("https://nameless-cliffs-25074.herokuapp.com/api/playlists/add/"+userId,
+                            "{\"name\" : \"" + playlists.get(position).getName() + "\",\n" +
+                                    "    \"description\" : \"" + playlists.get(position).getDescription() + "\",\n" +
+                                    "    \"image\" : \"" + playlists.get(position).getImageUrl() + "\"}"
+                            , new JsonHttpResponseHandler() {
+
+
+                                @Override
+                                public void onSuccess(int statusCode, Headers headers, JSON json) {
+                                    holder.like.setColorFilter(Color.argb(255, 255, 0, 0));
+                                    likeint=1;
+                                }
+
+
+                                @Override
+                                public void onFailure(int statusCode, @Nullable Headers headers, String errorResponse, @Nullable Throwable throwable) {
+                                    Log.d("DEBUG", errorResponse);
+                                }
+                            });
+
+            }
+            else
+            {
+                holder.like.setColorFilter(Color.argb(0, 0, 0, 0));
+                likeint=0;
+            }
+        });
+
         holder.play.setOnClickListener(v -> {
+            if(playint==0) {
+                holder.play.setImageResource(R.drawable.ic_baseline_pause_24);
+                playint = 1;
+            }
+            else
+            {
+                holder.play.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+                playint = 0;
+            }
             if (HomePage.mSpotifyAppRemote != null)
                 MainActivity.mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:" + playlists.get(position).getId());
         });
@@ -197,7 +250,7 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
         private final TextView description;
         private final ImageView imageplaylist;
         private final ImageButton play;
-
+        private final ImageButton like;
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
@@ -205,6 +258,7 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
             description = (TextView) view.findViewById(R.id.descriptionTextView);
             imageplaylist = (ImageView) view.findViewById(R.id.playlistImageView);
             play = (ImageButton) view.findViewById(R.id.play);
+            like = (ImageButton) view.findViewById(R.id.imageButton);
         }
 
         public TextView getTextView() {

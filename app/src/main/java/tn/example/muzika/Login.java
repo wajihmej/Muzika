@@ -47,6 +47,7 @@ public class Login extends AppCompatActivity {
         final LoadingDialog loadingDialog = new LoadingDialog(Login.this);
 
         sessionManager = new SessionManager(getApplicationContext());
+        Log.d("USER LOG", sessionManager.getUserDetails().toString());
         Login = findViewById(R.id.loginbutton);
         Register = findViewById(R.id.registerbutton);
         spotifyLogin = findViewById(R.id.spotifyLogin);

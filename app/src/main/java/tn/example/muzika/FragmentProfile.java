@@ -3,6 +3,7 @@ package tn.example.muzika;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -48,7 +49,7 @@ public class FragmentProfile extends Fragment {
     TextView profileName;
     SharedPreferences sharedPreferences;
     CircleImageView img;
-    Button myplaylists,likes,friends,saved;
+    Button myplaylists,likes,friends,logoutprofil;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -67,8 +68,17 @@ public class FragmentProfile extends Fragment {
         profileName = view.findViewById(R.id.profileName);
         myplaylists = view.findViewById(R.id.myplaylists);
         likes = view.findViewById(R.id.liked);
+        logoutprofil = view.findViewById(R.id.logoutporfile);
 
         img = view.findViewById(R.id.profile_image);
+
+        logoutprofil.setOnClickListener(v -> {
+            sharedPreferences.edit().clear().apply();
+            Intent intent = new Intent(getContext(), Login.class);
+            getContext().startActivity(intent);
+
+
+        });
         myplaylists.setOnClickListener(v -> {
             FragmentFav favfrag= new FragmentFav();
             FragmentManager manager = ((AppCompatActivity)getContext()).getSupportFragmentManager();
