@@ -96,11 +96,9 @@ class likedAdapter extends RecyclerView.Adapter<likedAdapter.MyViewHolder> imple
 
     void getData(Context cntx, ProgressDialog progressDialog) {
         AsyncHttpClient client = new AsyncHttpClient();
-        RequestHeaders requestHeaders = new RequestHeaders();
         SessionManager sessionManager = new SessionManager(cntx);
-        requestHeaders.put("Authorization", "Bearer " + sessionManager.getUserDetails().getSpotifyToken());
-        RequestParams request = new RequestParams();
-        client.get("https://api.spotify.com/v1/me/playlists", requestHeaders, request
+        String userId = sessionManager.getUserDetails().getId();
+        client.get("https://nameless-cliffs-25074.herokuapp.com/api/playlists/Playlistbyuser/"+userId
                 , new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Headers headers, JSON json) {

@@ -105,10 +105,11 @@ class TracksAdapter extends RecyclerView.Adapter<TracksAdapter.MyViewHolder> imp
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.home_adapter, parent, false);
+                .inflate(R.layout.track_adapter, parent, false);
 
         return new TracksAdapter.MyViewHolder(view);
     }
+    int playint=0;
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
@@ -117,6 +118,16 @@ class TracksAdapter extends RecyclerView.Adapter<TracksAdapter.MyViewHolder> imp
         Picasso.get().load(tracks.get(position).getImage()).into(holder.imageplaylist);
         holder.play.setOnClickListener(v -> {
             Log.d("TAG", "salem: ");
+            if(playint==0) {
+                holder.play.setImageResource(R.drawable.ic_baseline_pause_24);
+                playint = 1;
+            }
+            else
+            {
+                holder.play.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+                playint = 0;
+            }
+
 
         });
     }
@@ -162,14 +173,14 @@ class TracksAdapter extends RecyclerView.Adapter<TracksAdapter.MyViewHolder> imp
         private final TextView title;
         private final TextView description;
         private final ImageView imageplaylist;
-        private final ImageButton play;
+        private final ImageView play;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.playlistNameView);
             description = (TextView) itemView.findViewById(R.id.descriptionTextView);
             imageplaylist = (ImageView) itemView.findViewById(R.id.playlistImageView);
-            play= (ImageButton) itemView.findViewById(R.id.play);
+            play= (ImageView) itemView.findViewById(R.id.play);
 
         }
 
