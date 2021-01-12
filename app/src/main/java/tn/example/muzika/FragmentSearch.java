@@ -172,11 +172,8 @@ class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> imple
 
     void getData(Context cntx, ProgressDialog progressDialog) {
         AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
 
-        params.put("username", "");
-
-        client.get("https://nameless-cliffs-25074.herokuapp.com/api/SearchUser/"
+        client.get("https://nameless-cliffs-25074.herokuapp.com/api/search/*"
                 , new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
