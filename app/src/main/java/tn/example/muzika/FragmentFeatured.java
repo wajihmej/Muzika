@@ -231,14 +231,17 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
             if(playint==0) {
                 holder.play.setImageResource(R.drawable.ic_baseline_pause_24);
                 playint = 1;
+                if (HomePage.mSpotifyAppRemote != null)
+                    MainActivity.mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:" + playlists.get(position).getId());
+
             }
             else
             {
+                if (HomePage.mSpotifyAppRemote != null)
+                    MainActivity.mSpotifyAppRemote.getPlayerApi().pause();
                 holder.play.setImageResource(R.drawable.ic_baseline_play_arrow_24);
                 playint = 0;
             }
-            if (HomePage.mSpotifyAppRemote != null)
-                MainActivity.mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:" + playlists.get(position).getId());
         });
     }
 

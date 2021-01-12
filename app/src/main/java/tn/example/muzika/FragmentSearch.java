@@ -174,7 +174,7 @@ class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> imple
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
 
-        params.put("username", "w");
+        params.put("username", "");
 
         client.get("https://nameless-cliffs-25074.herokuapp.com/api/SearchUser/"
                 , new JsonHttpResponseHandler() {
