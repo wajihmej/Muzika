@@ -105,8 +105,9 @@ public class FragmentFeatured extends Fragment {
         RequestHeaders requestHeaders = new RequestHeaders();
         SessionManager sessionManager = new SessionManager(cntx);
         requestHeaders.put("Authorization", "Bearer " + sessionManager.getUserDetails().getSpotifyToken());
+
         RequestParams request = new RequestParams();
-        client.get("https://api.spotify.com/v1/browse/featured-playlists", requestHeaders, request
+        client.get("https://api.spotify.com/v1/browse/featured-playlists", requestHeaders, null
                 , new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
@@ -119,7 +120,8 @@ public class FragmentFeatured extends Fragment {
                         Log.d("DEBUG", errorResponse);
                     }
                 });
-    }}
+    }
+}
 
 class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> implements Runnable {
     private static ArrayList<Playlist> playlists;
@@ -321,6 +323,7 @@ class featuredAdapter extends RecyclerView.Adapter<featuredAdapter.ViewHolder> i
             imageplaylist = (ImageView) view.findViewById(R.id.playlistImageView);
             play = (ImageButton) view.findViewById(R.id.play);
             like = (ImageButton) view.findViewById(R.id.imageButton);
+
         }
 
         public TextView getTextView() {

@@ -46,6 +46,29 @@ public class Playlist {
         return finalList;
     }
 
+    public static ArrayList fromJsonLikes(JSONArray jsonObject) {
+
+        Log.d("JSON", jsonObject.toString());
+        ArrayList finalList = new ArrayList();
+        try {
+
+            for (int i=0 ; i<jsonObject.length() ; i++) {
+                JSONObject item  = jsonObject.getJSONObject(i);
+
+                Playlist playlist = new Playlist();
+                playlist.setId(item.getString("id"));
+                playlist.setName(item.getString("name"));
+                playlist.setImageUrl(item.getString("image"));
+                playlist.setDescription(item.getString("description"));
+                finalList.add(playlist);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        };
+        // Return new object
+        return finalList;
+    }
     @Override
     public String toString() {
         return "Playlist{" +

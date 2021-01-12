@@ -1,7 +1,12 @@
 package tn.example.muzika.models;
 
+import android.util.Log;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class user {
     private String id;
@@ -9,6 +14,7 @@ public class user {
     private String email;
     private String token;
     private String spotifyToken;
+    private String image;
 
     public user() {
     }
@@ -36,6 +42,33 @@ public class user {
         }
         // Return new object
         return u;
+    }
+
+    public static ArrayList fromJsonget(JSONArray jsonObject) {
+
+        ArrayList finalList = new ArrayList();
+        try {
+
+            for (int i=0 ; i<jsonObject.length() ; i++) {
+                JSONObject item  = jsonObject.getJSONObject(i);
+
+                user User = new user();
+
+                User.setUsername(item.getString("name"));
+                User.setId(item.getString("id"));
+                User.setEmail(item.getString("email"));
+                finalList.add(User);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        };
+        // Return new object
+        return finalList;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getUsername() {

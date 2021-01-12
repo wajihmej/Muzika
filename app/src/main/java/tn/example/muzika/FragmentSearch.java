@@ -43,18 +43,20 @@ import java.util.List;
 
 import okhttp3.Headers;
 import tn.example.muzika.models.Playlist;
+import tn.example.muzika.models.user;
 import tn.example.muzika.utils.SessionManager;
 
 public class FragmentSearch extends Fragment {
-    private ArrayList<Playlist> playlists;
+    private ArrayList<user> users;
+
     private SearchAdapter mAdapter;
     ProgressDialog progressDialog;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        playlists = new ArrayList<>();
-        getData(getContext());
+        users = new ArrayList<>();
+        getData(getContext(),"w");
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.mylistresult);
         recyclerView.setHasFixedSize(true);
@@ -63,7 +65,7 @@ public class FragmentSearch extends Fragment {
         progressDialog.show();
         progressDialog.setContentView(R.layout.custom_dialog);
         progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        mAdapter = new SearchAdapter(getContext(),progressDialog,playlists);
+        mAdapter = new SearchAdapter(getContext(),progressDialog,users);
 
         EditText editText = rootView.findViewById(R.id.searchview);
         recyclerView.setAdapter(mAdapter);
@@ -89,26 +91,26 @@ public class FragmentSearch extends Fragment {
         return rootView;
     }
     private void filter(String text) {
-        ArrayList<Playlist> filteredList = new ArrayList<>();
-        for (Playlist item : playlists) {
-            if (item.getName().toLowerCase().contains(text.toLowerCase())) {
+        ArrayList<user> filteredList = new ArrayList<>();
+        getData(getContext(),text);
+        for (user item : users) {
+            if (item.getUsername().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(item);
             }
         }
         mAdapter.filterList(filteredList);
     }
-    void getData(Context cntx) {
+    void getData(Context cntx,String text) {
         AsyncHttpClient client = new AsyncHttpClient();
-        RequestHeaders requestHeaders = new RequestHeaders();
-        SessionManager sessionManager = new SessionManager(cntx);
-        requestHeaders.put("Authorization", "Bearer " + sessionManager.getUserDetails().getSpotifyToken());
-        RequestParams request = new RequestParams();
-        client.get("https://api.spotify.com/v1/browse/featured-playlists", requestHeaders, request
+        RequestParams params = new RequestParams();
+        params.put("username", text);
+
+        client.get("https://nameless-cliffs-25074.herokuapp.com/api/SearchUser/"+text
                 , new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         Log.d("Featured Fragment", json.toString());
-                        playlists = Playlist.fromJson(json.jsonObject);
+                        users = user.fromJsonget(json.jsonArray);
                     }
 
                     @Override
@@ -117,19 +119,20 @@ public class FragmentSearch extends Fragment {
                     }
                 });
     }
+
 }
 
 
 class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> implements Runnable {
-    private static ArrayList<Playlist> playlists;
+    private static ArrayList<user> users;
 
     Context context;
     SearchAdapter adapter = this;
 
-    public SearchAdapter(Context context, ProgressDialog progressDialog, ArrayList<Playlist> playlists) {
+    public SearchAdapter(Context context, ProgressDialog progressDialog, ArrayList<user> users) {
         this.context = context;
         getData(context, progressDialog);
-        this.playlists = playlists;
+        this.users = users;
 
     }
 
@@ -145,97 +148,34 @@ class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> imple
 
     @Override
     public void onBindViewHolder(@NonNull SearchAdapter.ViewHolder holder, int position) {
-        holder.title.setText(playlists.get(position).getName());
-        holder.description.setText(playlists.get(position).getDescription());
-        Picasso.get().load(playlists.get(position).getImageUrl()).into(holder.imageplaylist);
-        ImageButton shareButton = (ImageButton) holder.itemView.findViewById(R.id.shareButton);
-
-        //GO TO MUSIC LIST
-        holder.itemView.setOnClickListener(v -> {
-
-            Bundle bundle = new Bundle();
-            bundle.putString("url", playlists.get(position).getTracksHref());
-
-            FragmentTracks tracksfrag= new FragmentTracks();
-            tracksfrag.setArguments(bundle);
-            FragmentManager manager = ((AppCompatActivity)context).getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.replace(R.id.fragment_container,tracksfrag);
-            transaction.commit();
-
-
-            /*
-            Intent intent = new Intent(this.context, tracks.class);
-            intent.putExtra("url", playlists.get(position).getTracksHref());
-            context.startActivity(intent);
-            */
-
-        });
-        shareButton.setOnClickListener(v -> {
-            View popupView = LayoutInflater.from(holder.itemView.getContext()).inflate(R.layout.share_popup, null);
-            int width = LinearLayout.LayoutParams.MATCH_PARENT;
-            int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-            boolean focusable = true; // lets taps outside the popup also dismiss it
-            final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-            popupView.findViewById(R.id.Share).setOnClickListener(v1 -> {
-                EditText postEdit = (EditText) popupView.findViewById(R.id.postText);
-                Log.d("Post Content", "onBindViewHolder: " + postEdit.getText().toString());
-                sharePost(holder.itemView.getContext(), position, postEdit.getText().toString(), popupWindow);
-
-            });
-            popupView.findViewById(R.id.Cancel).setOnClickListener(v12 -> {
-                popupWindow.dismiss();
-            });
-            popupWindow.showAtLocation(holder.itemView, Gravity.CENTER, 0, 0);
-        });
+        holder.title.setText(users.get(position).getUsername());
+        holder.description.setText(users.get(position).getEmail());
 
     }
 
 
     @Override
     public int getItemCount() {
-        if (playlists == null)
+        if (users == null)
             return 0;
         else
-            return playlists.size();
+            return users.size();
     }
 
 
-    void sharePost(Context cntx, int position, String postContent, PopupWindow window) {
-        AsyncHttpClient client = new AsyncHttpClient();
-        SessionManager sessionManager = new SessionManager(cntx);
-        String userId = sessionManager.getUserDetails().getId();
-        String playlistId = playlists.get(position).getId();
-        String body = "{\n" +
-                "    \"postContent\" : \"" + postContent + "\",\n" +
-                "    \"playlistId\" : \"" + playlistId + "\"\n}";
-        client.post("https://nameless-cliffs-25074.herokuapp.com/api/posts/add/" + userId, body, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Headers headers, JSON json) {
-                Log.d("Post response", "onSuccess: " + json.toString());
-                window.dismiss();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                Log.d("Post response", "onFailure: " + response);
-            }
-        });
-    }
 
     void getData(Context cntx, ProgressDialog progressDialog) {
         AsyncHttpClient client = new AsyncHttpClient();
-        RequestHeaders requestHeaders = new RequestHeaders();
-        SessionManager sessionManager = new SessionManager(cntx);
-        Log.d("eeeeeeeeeeeeee", sessionManager.getUserDetails().getSpotifyToken());
-        requestHeaders.put("Authorization", "Bearer " + sessionManager.getUserDetails().getSpotifyToken());
-        RequestParams request = new RequestParams();
-        client.get("https://api.spotify.com/v1/browse/featured-playlists", requestHeaders, request
+        RequestParams params = new RequestParams();
+
+        params.put("username", "w");
+
+        client.get("https://nameless-cliffs-25074.herokuapp.com/api/SearchUser/"
                 , new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         Log.d("Featured Fragment", json.toString());
-                        playlists = Playlist.fromJson(json.jsonObject);
+                        users = user.fromJsonget(json.jsonArray);
                         adapter.notifyDataSetChanged();
                         progressDialog.dismiss();
 
@@ -244,6 +184,8 @@ class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> imple
                     @Override
                     public void onFailure(int statusCode, @Nullable Headers headers, String errorResponse, @Nullable Throwable throwable) {
                         Log.d("DEBUG", errorResponse);
+                        progressDialog.dismiss();
+
                     }
                 });
     }
@@ -253,8 +195,8 @@ class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> imple
 
     }
 
-    public void filterList(ArrayList<Playlist> filteredList) {
-            playlists = filteredList;
+    public void filterList(ArrayList<user> filteredList) {
+            users = filteredList;
             notifyDataSetChanged();
 
     }

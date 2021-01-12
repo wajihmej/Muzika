@@ -35,7 +35,7 @@ public class FragmentFav extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_featured, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_fav, container, false);
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.featuredRecycler);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(rootView.getContext()));

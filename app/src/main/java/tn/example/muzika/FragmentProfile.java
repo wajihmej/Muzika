@@ -69,7 +69,7 @@ public class FragmentProfile extends Fragment {
         myplaylists = view.findViewById(R.id.myplaylists);
         likes = view.findViewById(R.id.liked);
         logoutprofil = view.findViewById(R.id.logoutporfile);
-
+        friends = view.findViewById(R.id.friends);
         img = view.findViewById(R.id.profile_image);
 
         logoutprofil.setOnClickListener(v -> {
@@ -87,7 +87,13 @@ public class FragmentProfile extends Fragment {
             transaction.commit();
 
         });
-
+        friends.setOnClickListener(v -> {
+            FragmentFriends friendsfrag= new FragmentFriends();
+            FragmentManager manager = ((AppCompatActivity)getContext()).getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.fragment_container,friendsfrag);
+            transaction.commit();
+        });
         likes.setOnClickListener(v -> {
             FragmentLike likesfrag= new FragmentLike();
             FragmentManager manager = ((AppCompatActivity)getContext()).getSupportFragmentManager();
@@ -101,6 +107,8 @@ public class FragmentProfile extends Fragment {
 
 
     public void getUserInfo(String token,ProgressDialog progressDialog) {
+        SessionManager sessionManager = new SessionManager(getContext());
+
         AsyncHttpClient client = new AsyncHttpClient();
         final user[] loggedUser = new user[1];
         Log.d("logged", loggedUser.toString());
@@ -117,7 +125,7 @@ public class FragmentProfile extends Fragment {
                             e.printStackTrace();
                         }
                         if (details[0] != null) {
-                            profileName.setText(details[0].getDisplayName());
+                            profileName.setText(sessionManager.getUserDetails().getUsername()+" ("+details[0].getDisplayName()+")");
                         }
                         if(details[0].getImageUrl()==""){
 
