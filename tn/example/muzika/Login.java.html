@@ -1,0 +1,196 @@
+<html>
+<head>
+<title>Login.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6a8759;}
+.s4 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Login.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">tn.example.muzika</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.app.Activity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.app.Dialog</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.SharedPreferences</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.graphics.Color</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.graphics.drawable.ColorDrawable</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.util.Log</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Button</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.EditText</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.Nullable</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.codepath.asynchttpclient.AsyncHttpClient</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.codepath.asynchttpclient.callback.JsonHttpResponseHandler</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">org.json.JSONException</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.json.JSONObject</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">okhttp3.Headers</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">tn.example.muzika.models.user</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">tn.example.muzika.utils.SessionManager</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">Login </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+
+    <span class="s1">Button Register</span><span class="s0">, </span><span class="s1">Login</span><span class="s0">, </span><span class="s1">spotifyLogin</span><span class="s0">;</span>
+    <span class="s1">EditText username</span><span class="s0">, </span><span class="s1">password</span><span class="s0">;</span>
+    <span class="s1">SharedPreferences pref</span><span class="s0">;</span>
+    <span class="s1">SessionManager sessionManager</span><span class="s0">;</span>
+    <span class="s2">//Dialog</span>
+    <span class="s1">Dialog dialog</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Activity app = </span><span class="s0">this;</span>
+
+    <span class="s1">SharedPreferences sharedPreferences </span><span class="s0">;</span>
+    <span class="s0">public static </span><span class="s1">String FILE_NAME = </span><span class="s3">&quot;com.exemple.muzika.sp&quot;</span><span class="s0">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
+        <span class="s1">setContentView(R.layout.activity_login)</span><span class="s0">;</span>
+        <span class="s0">final </span><span class="s1">LoadingDialog loadingDialog = </span><span class="s0">new </span><span class="s1">LoadingDialog(Login.</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">sessionManager = </span><span class="s0">new </span><span class="s1">SessionManager(getApplicationContext())</span><span class="s0">;</span>
+        <span class="s1">Login = findViewById(R.id.loginbutton)</span><span class="s0">;</span>
+        <span class="s1">Register = findViewById(R.id.registerbutton)</span><span class="s0">;</span>
+        <span class="s1">spotifyLogin = findViewById(R.id.spotifyLogin)</span><span class="s0">;</span>
+        <span class="s1">pref = getSharedPreferences(</span><span class="s3">&quot;Session&quot;</span><span class="s0">, </span><span class="s4">0</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">username = (EditText) findViewById(R.id.userName)</span><span class="s0">;</span>
+        <span class="s1">password = (EditText) findViewById(R.id.password)</span><span class="s0">;</span>
+        <span class="s1">Log.d(</span><span class="s3">&quot;Spotify App remote&quot;</span><span class="s0">, </span><span class="s3">&quot;appRemote.isConnected()&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">sharedPreferences = getSharedPreferences(FILE_NAME</span><span class="s0">,</span><span class="s1">MODE_PRIVATE)</span><span class="s0">;</span>
+        <span class="s0">if</span><span class="s1">(!sharedPreferences.getString(</span><span class="s3">&quot;LOGIN&quot;</span><span class="s0">,</span><span class="s3">&quot;&quot;</span><span class="s1">).isEmpty())</span>
+        <span class="s1">{</span>
+            <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(Login.</span><span class="s0">this,</span><span class="s1">HomePage.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+            <span class="s1">finish()</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+        <span class="s2">//dialog</span>
+        <span class="s1">dialog = </span><span class="s0">new </span><span class="s1">Dialog(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">Register.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(Login.</span><span class="s0">this, </span><span class="s1">Register.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">Login.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">loadingDialog.startLoadingDialog()</span><span class="s0">;</span>
+
+                <span class="s1">login(loadingDialog)</span><span class="s0">;</span>
+
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">spotifyLogin.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onStart() {</span>
+        <span class="s0">super</span><span class="s1">.onStart()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onResume() {</span>
+        <span class="s0">super</span><span class="s1">.onResume()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onStop() {</span>
+        <span class="s0">super</span><span class="s1">.onStop()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onPause() {</span>
+        <span class="s0">super</span><span class="s1">.onPause()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onDestroy() {</span>
+        <span class="s0">super</span><span class="s1">.onDestroy()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+    <span class="s0">void </span><span class="s1">login(LoadingDialog loadingDialog) {</span>
+        <span class="s1">AsyncHttpClient client = </span><span class="s0">new </span><span class="s1">AsyncHttpClient()</span><span class="s0">;</span>
+        <span class="s0">final </span><span class="s1">user[] loggedUser = </span><span class="s0">new </span><span class="s1">user[</span><span class="s4">1</span><span class="s1">]</span><span class="s0">;</span>
+        <span class="s1">client.post(</span><span class="s3">&quot;https://nameless-cliffs-25074.herokuapp.com/api/auth/signin&quot;</span><span class="s0">,</span>
+                <span class="s3">&quot;{</span><span class="s0">\&quot;</span><span class="s3">username</span><span class="s0">\&quot; </span><span class="s3">: </span><span class="s0">\&quot;</span><span class="s3">&quot; </span><span class="s1">+ username.getText().toString() + </span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">,</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+</span>
+                        <span class="s3">&quot;    </span><span class="s0">\&quot;</span><span class="s3">password</span><span class="s0">\&quot; </span><span class="s3">: </span><span class="s0">\&quot;</span><span class="s3">&quot; </span><span class="s1">+ password.getText().toString() + </span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">}&quot;</span>
+                <span class="s0">, new </span><span class="s1">JsonHttpResponseHandler() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onSuccess(</span><span class="s0">int </span><span class="s1">statusCode</span><span class="s0">, </span><span class="s1">Headers headers</span><span class="s0">, </span><span class="s1">JSON json) {</span>
+                        <span class="s1">JSONObject userJson = json.jsonObject</span><span class="s0">;</span>
+                        <span class="s1">loggedUser[</span><span class="s4">0</span><span class="s1">] = user.fromJson(userJson)</span><span class="s0">;</span>
+                        <span class="s1">Log.d(</span><span class="s3">&quot;USER JSON STRING&quot;</span><span class="s0">, </span><span class="s1">json.toString())</span><span class="s0">;</span>
+                        <span class="s1">sessionManager.createLoginSession(loggedUser[</span><span class="s4">0</span><span class="s1">].getId()</span><span class="s0">, </span><span class="s1">loggedUser[</span><span class="s4">0</span><span class="s1">].getUsername()</span><span class="s0">, </span><span class="s1">loggedUser[</span><span class="s4">0</span><span class="s1">].getEmail()</span><span class="s0">, </span><span class="s1">loggedUser[</span><span class="s4">0</span><span class="s1">].getToken())</span><span class="s0">;</span>
+                        <span class="s1">loadingDialog.startLoadingDialog()</span><span class="s0">;</span>
+                        <span class="s1">success(loadingDialog)</span><span class="s0">;</span>
+
+                    <span class="s1">}</span>
+
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onFailure(</span><span class="s0">int </span><span class="s1">statusCode</span><span class="s0">, </span><span class="s1">@Nullable Headers headers</span><span class="s0">, </span><span class="s1">String errorResponse</span><span class="s0">, </span><span class="s1">@Nullable Throwable throwable) {</span>
+                        <span class="s1">Log.d(</span><span class="s3">&quot;DEBUG&quot;</span><span class="s0">, </span><span class="s1">errorResponse)</span><span class="s0">;</span>
+                        <span class="s1">loadingDialog.dismissDialog()</span><span class="s0">;</span>
+                        <span class="s1">OpenErreurDialog(errorResponse)</span><span class="s0">;</span>
+
+                    <span class="s1">}</span>
+                <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+    <span class="s0">void </span><span class="s1">success(LoadingDialog loadingDialog) {</span>
+        <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(Login.</span><span class="s0">this, </span><span class="s1">HomePage.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+        <span class="s1">finish()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+    <span class="s2">//dialog</span>
+    <span class="s0">private void </span><span class="s1">OpenErreurDialog(String errorResponse) {</span>
+        <span class="s1">dialog.setContentView(R.layout.erreur_dialog)</span><span class="s0">;</span>
+        <span class="s1">dialog.getWindow().setBackgroundDrawable(</span><span class="s0">new </span><span class="s1">ColorDrawable(Color.TRANSPARENT))</span><span class="s0">;</span>
+        <span class="s1">Button tryagain = dialog.findViewById(R.id.tryagainbutton)</span><span class="s0">;</span>
+        <span class="s1">TextView text = dialog.findViewById(R.id.Ereurtext)</span><span class="s0">;</span>
+        <span class="s2">/* 
+        if(errorResponse.equals(&quot;{\&quot;message\&quot;:\&quot;User Not found.\&quot;}&quot;)) 
+        text.setText(&quot;User Not found.&quot;); 
+        */</span>
+        <span class="s1">tryagain.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">dialog.dismiss()</span><span class="s0">;</span>
+                <span class="s1">Toast.makeText(Login.</span><span class="s0">this, </span><span class="s3">&quot;OUPS!&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">dialog.show()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span></pre>
+</body>
+</html>

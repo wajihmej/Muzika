@@ -1,0 +1,93 @@
+<html>
+<head>
+<title>Register.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #6a8759;}
+.s4 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Register.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">tn.example.muzika</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.util.Log</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Button</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.EditText</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.Nullable</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.codepath.asynchttpclient.AsyncHttpClient</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.codepath.asynchttpclient.callback.JsonHttpResponseHandler</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">okhttp3.Headers</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">tn.example.muzika.models.user</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">Register </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+
+    <span class="s1">Button Register</span><span class="s0">;</span>
+    <span class="s1">EditText username</span><span class="s0">, </span><span class="s1">email</span><span class="s0">, </span><span class="s1">password</span><span class="s0">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
+        <span class="s1">setContentView(R.layout.activity_register)</span><span class="s0">;</span>
+
+        <span class="s1">username = (EditText) findViewById(R.id.usernamereg)</span><span class="s0">;</span>
+        <span class="s1">email = (EditText) findViewById(R.id.emailreg)</span><span class="s0">;</span>
+        <span class="s1">password = (EditText) findViewById(R.id.passwordreg)</span><span class="s0">;</span>
+
+        <span class="s1">Register = findViewById(R.id.registerb)</span><span class="s0">;</span>
+
+        <span class="s1">Register.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(Register.</span><span class="s0">this, </span><span class="s1">HomePage.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">user loggedUser = register(intent)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s1">user register(Intent intent) {</span>
+        <span class="s1">AsyncHttpClient client = </span><span class="s0">new </span><span class="s1">AsyncHttpClient()</span><span class="s0">;</span>
+        <span class="s0">final </span><span class="s1">user[] loggedUser = </span><span class="s0">new </span><span class="s1">user[</span><span class="s2">1</span><span class="s1">]</span><span class="s0">;</span>
+        <span class="s1">client.post(</span><span class="s3">&quot;https://nameless-cliffs-25074.herokuapp.com/api/auth/signup&quot;</span><span class="s0">,</span>
+                <span class="s3">&quot;{</span><span class="s0">\&quot;</span><span class="s3">username</span><span class="s0">\&quot; </span><span class="s3">: </span><span class="s0">\&quot;</span><span class="s3">&quot; </span><span class="s1">+ username.getText().toString() + </span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">,</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+</span>
+                        <span class="s3">&quot;    </span><span class="s0">\&quot;</span><span class="s3">email</span><span class="s0">\&quot; </span><span class="s3">: </span><span class="s0">\&quot;</span><span class="s3">&quot; </span><span class="s1">+ email.getText().toString() + </span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">,</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+</span>
+                        <span class="s3">&quot;    </span><span class="s0">\&quot;</span><span class="s3">password</span><span class="s0">\&quot; </span><span class="s3">: </span><span class="s0">\&quot;</span><span class="s3">&quot; </span><span class="s1">+ password.getText().toString() + </span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">}&quot;</span>
+                <span class="s0">, new </span><span class="s1">JsonHttpResponseHandler() {</span>
+
+
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onSuccess(</span><span class="s0">int </span><span class="s1">statusCode</span><span class="s0">, </span><span class="s1">Headers headers</span><span class="s0">, </span><span class="s1">JSON json) {</span>
+                        <span class="s4">//SONObject userJson = json.jsonObject;</span>
+                        <span class="s4">//loggedUser[0] = user.fromJson(userJson);</span>
+                        <span class="s4">//Log.d(&quot;Json&quot; , loggedUser[0].toString());</span>
+                        <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+                        <span class="s1">finish()</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+
+
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onFailure(</span><span class="s0">int </span><span class="s1">statusCode</span><span class="s0">, </span><span class="s1">@Nullable Headers headers</span><span class="s0">, </span><span class="s1">String errorResponse</span><span class="s0">, </span><span class="s1">@Nullable Throwable throwable) {</span>
+                        <span class="s1">Log.d(</span><span class="s3">&quot;DEBUG&quot;</span><span class="s0">, </span><span class="s1">errorResponse)</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">})</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">loggedUser[</span><span class="s2">0</span><span class="s1">]</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+<span class="s1">}</span></pre>
+</body>
+</html>

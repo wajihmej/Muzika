@@ -41,32 +41,28 @@ public class HomePage extends AppCompatActivity {
     public static SpotifyAppRemote mSpotifyAppRemote;
     private SessionManager sessionManager;
     SharedPreferences sharedPreferences;
-    //Dialog
     Dialog dialog;
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    Fragment selectedFragment = null;
-                    switch (item.getItemId()) {
-                        case R.id.nav_home:
-                            selectedFragment = new FragmentHome();
-                            break;
-                        case R.id.nav_fav:
-                            selectedFragment = new FragmentFeatured();
-                            break;
-                        case R.id.nav_profile:
-                            selectedFragment = new FragmentProfile();
-                            break;
-                        case R.id.nav_search :
-                            selectedFragment = new FragmentSearch();
-                            break;
-                    }
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            selectedFragment).commit();
-                    return true;
+            item -> {
+                Fragment selectedFragment = null;
+                switch (item.getItemId()) {
+                    case R.id.nav_home:
+                        selectedFragment = new FragmentHome();
+                        break;
+                    case R.id.nav_fav:
+                        selectedFragment = new FragmentFeatured();
+                        break;
+                    case R.id.nav_profile:
+                        selectedFragment = new FragmentProfile();
+                        break;
+                    case R.id.nav_search :
+                        selectedFragment = new FragmentSearch();
+                        break;
                 }
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        selectedFragment).commit();
+                return true;
             };
 
     @Override

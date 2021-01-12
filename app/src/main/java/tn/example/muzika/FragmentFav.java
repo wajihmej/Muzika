@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -107,12 +108,13 @@ class favdAdapter extends RecyclerView.Adapter<favdAdapter.MyViewHolder> impleme
                         Log.d("Featured Fragment", json.toString());
                         tracks = Track.fromJsonFav(json.jsonObject);
                         adapter.notifyDataSetChanged();
-                        progressDialog.dismiss();
                     }
 
                     @Override
                     public void onFailure(int statusCode, @Nullable Headers headers, String errorResponse, @Nullable Throwable throwable) {
                         Log.d("DEBUG", errorResponse);
+                        Toast.makeText(context,"Error posting", Toast.LENGTH_SHORT);
+                        progressDialog.dismiss();
                     }
                 });
     }

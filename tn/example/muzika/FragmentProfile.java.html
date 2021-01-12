@@ -1,0 +1,175 @@
+<html>
+<head>
+<title>FragmentProfile.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6a8759;}
+.s4 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+FragmentProfile.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">tn.example.muzika</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.app.Dialog</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.app.ProgressDialog</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.SharedPreferences</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.graphics.Color</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.graphics.drawable.ColorDrawable</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.util.Log</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.LayoutInflater</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.ViewGroup</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Button</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.ImageButton</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.ImageView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.annotation.Nullable</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.fragment.app.Fragment</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.fragment.app.FragmentManager</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.fragment.app.FragmentTransaction</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.codepath.asynchttpclient.AsyncHttpClient</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.codepath.asynchttpclient.RequestHeaders</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.codepath.asynchttpclient.callback.JsonHttpResponseHandler</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.squareup.picasso.Picasso</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">org.json.JSONException</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">de.hdodenhof.circleimageview.CircleImageView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">okhttp3.Headers</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">tn.example.muzika.models.UserDetails</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">tn.example.muzika.models.user</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">tn.example.muzika.utils.SessionManager</span><span class="s0">;</span>
+
+<span class="s0">import static </span><span class="s1">android.content.Context.MODE_PRIVATE</span><span class="s0">;</span>
+<span class="s0">import static </span><span class="s1">tn.example.muzika.Login.FILE_NAME</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">FragmentProfile </span><span class="s0">extends </span><span class="s1">Fragment {</span>
+    <span class="s2">//DIALOG</span>
+    <span class="s1">ProgressDialog progressDialog</span><span class="s0">;</span>
+    <span class="s1">Dialog dialog</span><span class="s0">;</span>
+
+    <span class="s1">TextView profileName</span><span class="s0">;</span>
+    <span class="s1">SharedPreferences sharedPreferences</span><span class="s0">;</span>
+    <span class="s1">CircleImageView img</span><span class="s0">;</span>
+    <span class="s1">Button myplaylists</span><span class="s0">,</span><span class="s1">likes</span><span class="s0">,</span><span class="s1">friends</span><span class="s0">,</span><span class="s1">saved</span><span class="s0">;</span>
+    <span class="s1">@Nullable</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">View onCreateView(@NonNull LayoutInflater inflater</span><span class="s0">, </span><span class="s1">@Nullable ViewGroup container</span><span class="s0">, </span><span class="s1">@Nullable Bundle savedInstanceState) {</span>
+        <span class="s1">View view = inflater.inflate(R.layout.fragment_profile</span><span class="s0">, </span><span class="s1">container</span><span class="s0">, false</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">SessionManager sessionManager = </span><span class="s0">new </span><span class="s1">SessionManager(</span><span class="s0">this</span><span class="s1">.getContext())</span><span class="s0">;</span>
+        <span class="s1">String token = sessionManager.getUserDetails().getSpotifyToken()</span><span class="s0">;</span>
+        <span class="s1">sharedPreferences = </span><span class="s0">this</span><span class="s1">.getActivity().getSharedPreferences(FILE_NAME</span><span class="s0">,</span><span class="s1">MODE_PRIVATE)</span><span class="s0">;</span>
+        <span class="s1">Log.d(</span><span class="s3">&quot;salem&quot;</span><span class="s0">, </span><span class="s1">sharedPreferences.getString(</span><span class="s3">&quot;LOGIN&quot;</span><span class="s0">,</span><span class="s3">&quot;&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">progressDialog = </span><span class="s0">new </span><span class="s1">ProgressDialog(</span><span class="s0">this</span><span class="s1">.getContext())</span><span class="s0">;</span>
+        <span class="s1">progressDialog.show()</span><span class="s0">;</span>
+        <span class="s1">progressDialog.setContentView(R.layout.custom_dialog)</span><span class="s0">;</span>
+        <span class="s1">progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent)</span><span class="s0">;</span>
+
+        <span class="s1">getUserInfo(sharedPreferences.getString(</span><span class="s3">&quot;LOGIN&quot;</span><span class="s0">,</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">,</span><span class="s1">progressDialog)</span><span class="s0">;</span>
+
+        <span class="s1">profileName = view.findViewById(R.id.profileName)</span><span class="s0">;</span>
+        <span class="s1">myplaylists = view.findViewById(R.id.myplaylists)</span><span class="s0">;</span>
+        <span class="s1">likes = view.findViewById(R.id.liked)</span><span class="s0">;</span>
+
+        <span class="s1">img = view.findViewById(R.id.profile_image)</span><span class="s0">;</span>
+        <span class="s1">myplaylists.setOnClickListener(v -&gt; {</span>
+            <span class="s1">FragmentFav favfrag= </span><span class="s0">new </span><span class="s1">FragmentFav()</span><span class="s0">;</span>
+            <span class="s1">FragmentManager manager = ((AppCompatActivity)getContext()).getSupportFragmentManager()</span><span class="s0">;</span>
+            <span class="s1">FragmentTransaction transaction = manager.beginTransaction()</span><span class="s0">;</span>
+            <span class="s1">transaction.replace(R.id.fragment_container</span><span class="s0">,</span><span class="s1">favfrag)</span><span class="s0">;</span>
+            <span class="s1">transaction.commit()</span><span class="s0">;</span>
+
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">likes.setOnClickListener(v -&gt; {</span>
+            <span class="s1">FragmentLike likesfrag= </span><span class="s0">new </span><span class="s1">FragmentLike()</span><span class="s0">;</span>
+            <span class="s1">FragmentManager manager = ((AppCompatActivity)getContext()).getSupportFragmentManager()</span><span class="s0">;</span>
+            <span class="s1">FragmentTransaction transaction = manager.beginTransaction()</span><span class="s0">;</span>
+            <span class="s1">transaction.replace(R.id.fragment_container</span><span class="s0">,</span><span class="s1">likesfrag)</span><span class="s0">;</span>
+            <span class="s1">transaction.commit()</span><span class="s0">;</span>
+
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">view</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+    <span class="s0">public void </span><span class="s1">getUserInfo(String token</span><span class="s0">,</span><span class="s1">ProgressDialog progressDialog) {</span>
+        <span class="s1">AsyncHttpClient client = </span><span class="s0">new </span><span class="s1">AsyncHttpClient()</span><span class="s0">;</span>
+        <span class="s0">final </span><span class="s1">user[] loggedUser = </span><span class="s0">new </span><span class="s1">user[</span><span class="s4">1</span><span class="s1">]</span><span class="s0">;</span>
+        <span class="s1">Log.d(</span><span class="s3">&quot;logged&quot;</span><span class="s0">, </span><span class="s1">loggedUser.toString())</span><span class="s0">;</span>
+        <span class="s1">RequestHeaders requestHeaders = </span><span class="s0">new </span><span class="s1">RequestHeaders()</span><span class="s0">;</span>
+        <span class="s1">requestHeaders.put(</span><span class="s3">&quot;Authorization&quot;</span><span class="s0">, </span><span class="s3">&quot;Bearer &quot; </span><span class="s1">+ token)</span><span class="s0">;</span>
+        <span class="s0">final </span><span class="s1">UserDetails[] details = </span><span class="s0">new </span><span class="s1">UserDetails[</span><span class="s4">1</span><span class="s1">]</span><span class="s0">;</span>
+        <span class="s1">client.get(</span><span class="s3">&quot;https://api.spotify.com/v1/me&quot;</span><span class="s0">, </span><span class="s1">requestHeaders</span><span class="s0">, null</span>
+                <span class="s0">, new </span><span class="s1">JsonHttpResponseHandler() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onSuccess(</span><span class="s0">int </span><span class="s1">statusCode</span><span class="s0">, </span><span class="s1">Headers headers</span><span class="s0">, </span><span class="s1">JSON json) {</span>
+                        <span class="s0">try </span><span class="s1">{</span>
+                            <span class="s1">details[</span><span class="s4">0</span><span class="s1">] = UserDetails.detailsFromJson(json.jsonObject)</span><span class="s0">;</span>
+                        <span class="s1">} </span><span class="s0">catch </span><span class="s1">(JSONException e) {</span>
+                            <span class="s1">e.printStackTrace()</span><span class="s0">;</span>
+                        <span class="s1">}</span>
+                        <span class="s0">if </span><span class="s1">(details[</span><span class="s4">0</span><span class="s1">] != </span><span class="s0">null</span><span class="s1">) {</span>
+                            <span class="s1">profileName.setText(details[</span><span class="s4">0</span><span class="s1">].getDisplayName())</span><span class="s0">;</span>
+                        <span class="s1">}</span>
+                        <span class="s0">if</span><span class="s1">(details[</span><span class="s4">0</span><span class="s1">].getImageUrl()==</span><span class="s3">&quot;&quot;</span><span class="s1">){</span>
+
+                        <span class="s1">}</span>
+                        <span class="s0">else </span><span class="s1">{</span>
+                            <span class="s1">Picasso.get().load(details[</span><span class="s4">0</span><span class="s1">].getImageUrl()).into(img)</span><span class="s0">;</span>
+
+                        <span class="s1">}</span>
+                    <span class="s1">progressDialog.dismiss()</span><span class="s0">;</span>
+
+                    <span class="s1">}</span>
+
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onFailure(</span><span class="s0">int </span><span class="s1">statusCode</span><span class="s0">, </span><span class="s1">@Nullable Headers headers</span><span class="s0">, </span><span class="s1">String errorResponse</span><span class="s0">, </span><span class="s1">@Nullable Throwable throwable) {</span>
+                        <span class="s1">dialog = </span><span class="s0">new </span><span class="s1">Dialog(getContext())</span><span class="s0">;</span>
+
+                        <span class="s1">Log.d(</span><span class="s3">&quot;DEBUG&quot;</span><span class="s0">, </span><span class="s1">errorResponse)</span><span class="s0">;</span>
+                        <span class="s1">progressDialog.dismiss()</span><span class="s0">;</span>
+                        <span class="s1">OpenErreurDialog(errorResponse)</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+    <span class="s2">//dialog</span>
+    <span class="s0">private void </span><span class="s1">OpenErreurDialog(String errorResponse) {</span>
+        <span class="s1">dialog.setContentView(R.layout.erreur_dialog)</span><span class="s0">;</span>
+        <span class="s1">dialog.getWindow().setBackgroundDrawable(</span><span class="s0">new </span><span class="s1">ColorDrawable(Color.TRANSPARENT))</span><span class="s0">;</span>
+        <span class="s1">Button tryagain = dialog.findViewById(R.id.tryagainbutton)</span><span class="s0">;</span>
+        <span class="s1">TextView text = dialog.findViewById(R.id.Ereurtext)</span><span class="s0">;</span>
+        <span class="s1">text.setText(</span><span class="s3">&quot;Check connection&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s2">/* 
+        if(errorResponse.equals(&quot;{\&quot;message\&quot;:\&quot;User Not found.\&quot;}&quot;)) 
+        text.setText(&quot;User Not found.&quot;); 
+        */</span>
+        <span class="s1">tryagain.setText(</span><span class="s3">&quot;ok&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">tryagain.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">dialog.dismiss()</span><span class="s0">;</span>
+                <span class="s1">Toast.makeText(getContext()</span><span class="s0">, </span><span class="s3">&quot;OUPS!&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">dialog.show()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+</pre>
+</body>
+</html>

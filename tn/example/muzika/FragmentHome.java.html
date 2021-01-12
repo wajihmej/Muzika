@@ -1,0 +1,222 @@
+<html>
+<head>
+<title>FragmentHome.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6897bb;}
+.s4 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+FragmentHome.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">tn.example.muzika</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.app.ProgressDialog</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.StrictMode</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.util.Log</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.LayoutInflater</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.ViewGroup</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.ImageView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.annotation.Nullable</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.fragment.app.Fragment</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.recyclerview.widget.LinearLayoutManager</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.recyclerview.widget.RecyclerView</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.codepath.asynchttpclient.AsyncHttpClient</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.codepath.asynchttpclient.callback.JsonHttpResponseHandler</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.squareup.picasso.Picasso</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">org.json.JSONException</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.json.JSONObject</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.io.IOException</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">okhttp3.Headers</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">okhttp3.OkHttpClient</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">okhttp3.Request</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">okhttp3.Response</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">tn.example.muzika.models.Post</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">tn.example.muzika.utils.SessionManager</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">FragmentHome </span><span class="s0">extends </span><span class="s1">Fragment {</span>
+
+
+    <span class="s0">private </span><span class="s1">RecyclerView recyclerView</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">RecyclerView CommentView</span><span class="s0">;</span>
+    <span class="s1">ProgressDialog progressDialog</span><span class="s0">;</span>
+
+    <span class="s1">@Nullable</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">View onCreateView(@NonNull LayoutInflater inflater</span><span class="s0">, </span><span class="s1">@Nullable ViewGroup container</span><span class="s0">, </span><span class="s1">@Nullable Bundle savedInstanceState) {</span>
+
+        <span class="s1">View rootView = inflater.inflate(R.layout.fragment_home</span><span class="s0">, </span><span class="s1">container</span><span class="s0">, false</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">recyclerView = (RecyclerView) rootView.findViewById(R.id.featuredRecycler)</span><span class="s0">;</span>
+
+        <span class="s1">recyclerView.setHasFixedSize(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">recyclerView.setLayoutManager(</span><span class="s0">new </span><span class="s1">LinearLayoutManager(rootView.getContext()))</span><span class="s0">;</span>
+        <span class="s1">progressDialog = </span><span class="s0">new </span><span class="s1">ProgressDialog(</span><span class="s0">this</span><span class="s1">.getContext())</span><span class="s0">;</span>
+        <span class="s1">progressDialog.show()</span><span class="s0">;</span>
+        <span class="s1">progressDialog.setContentView(R.layout.custom_dialog)</span><span class="s0">;</span>
+        <span class="s1">progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent)</span><span class="s0">;</span>
+
+        <span class="s1">recyclerView.setAdapter(</span><span class="s0">new </span><span class="s1">homeAdapter(</span><span class="s0">this</span><span class="s1">.getContext()</span><span class="s0">,</span><span class="s1">progressDialog))</span><span class="s0">;</span>
+
+
+       <span class="s2">/* CommentView = (RecyclerView) rootView.findViewById(R.id.commentsRecyclerView); 
+        CommentView.setHasFixedSize(true); 
+        CommentView.setLayoutManager(new LinearLayoutManager(rootView.getContext())); 
+        CommentView.setAdapter(new commentAdapter(this.getContext()));*/</span>
+
+        <span class="s0">int </span><span class="s1">SDK_INT = android.os.Build.VERSION.SDK_INT</span><span class="s0">;</span>
+        <span class="s0">if </span><span class="s1">(SDK_INT &gt; </span><span class="s3">8</span><span class="s1">) {</span>
+            <span class="s1">StrictMode.ThreadPolicy policy = </span><span class="s0">new </span><span class="s1">StrictMode.ThreadPolicy.Builder()</span>
+                    <span class="s1">.permitAll().build()</span><span class="s0">;</span>
+            <span class="s1">StrictMode.setThreadPolicy(policy)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        <span class="s0">return </span><span class="s1">rootView</span><span class="s0">;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+
+<span class="s0">class </span><span class="s1">homeAdapter </span><span class="s0">extends </span><span class="s1">RecyclerView.Adapter&lt;homeAdapter.ViewHolder&gt; {</span>
+
+    <span class="s1">ArrayList&lt;Post&gt; posts = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+    <span class="s1">homeAdapter adapter = </span><span class="s0">this;</span>
+    <span class="s1">OkHttpClient client = </span><span class="s0">new </span><span class="s1">OkHttpClient()</span><span class="s0">;</span>
+    <span class="s1">SessionManager sessionManager</span><span class="s0">;</span>
+
+    <span class="s0">public </span><span class="s1">homeAdapter(Context context</span><span class="s0">,</span><span class="s1">ProgressDialog progressDialog) {</span>
+        <span class="s1">sessionManager = </span><span class="s0">new </span><span class="s1">SessionManager(context)</span><span class="s0">;</span>
+        <span class="s1">getPosts(context</span><span class="s0">,</span><span class="s1">progressDialog)</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s1">@NonNull</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">homeAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent</span><span class="s0">, int </span><span class="s1">viewType) {</span>
+        <span class="s1">View view = LayoutInflater.from(parent.getContext())</span>
+                <span class="s1">.inflate(R.layout.post_adapter</span><span class="s0">, </span><span class="s1">parent</span><span class="s0">, false</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s0">return new </span><span class="s1">ViewHolder(view)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onBindViewHolder(@NonNull homeAdapter.ViewHolder holder</span><span class="s0">, int </span><span class="s1">position) {</span>
+        <span class="s1">holder.postContent.setText(posts.get(position).getPostContent())</span><span class="s0">;</span>
+        <span class="s0">try </span><span class="s1">{</span>
+            <span class="s1">getPlaylistImage(posts.get(position).getPlaylistId()</span><span class="s0">, </span><span class="s1">holder)</span><span class="s0">;</span>
+        <span class="s1">} </span><span class="s0">catch </span><span class="s1">(IOException | JSONException e) {</span>
+            <span class="s1">e.printStackTrace()</span><span class="s0">;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">getPlaylistImage(String playlist</span><span class="s0">, </span><span class="s1">ViewHolder holder) </span><span class="s0">throws </span><span class="s1">IOException</span><span class="s0">, </span><span class="s1">JSONException {</span>
+        <span class="s1">Request request = </span><span class="s0">new </span><span class="s1">Request.Builder().url(</span><span class="s4">&quot;https://api.spotify.com/v1/playlists/&quot; </span><span class="s1">+ playlist)</span>
+                <span class="s1">.header(</span><span class="s4">&quot;Authorization&quot;</span><span class="s0">, </span><span class="s4">&quot;Bearer &quot; </span><span class="s1">+ sessionManager.getUserDetails().getSpotifyToken())</span>
+                <span class="s1">.build()</span><span class="s0">;</span>
+        <span class="s1">Response response = client.newCall(request).execute()</span><span class="s0">;</span>
+        <span class="s1">JSONObject obj = </span><span class="s0">new </span><span class="s1">JSONObject(response.body().string())</span><span class="s0">;</span>
+        <span class="s1">String name = obj.getString(</span><span class="s4">&quot;name&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">String url = obj.getJSONArray(</span><span class="s4">&quot;images&quot;</span><span class="s1">).getJSONObject(</span><span class="s3">0</span><span class="s1">).getString(</span><span class="s4">&quot;url&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">Picasso.get().load(url).into(holder.playlistImage)</span><span class="s0">;</span>
+        <span class="s1">holder.playlistName.setText(name)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">getUserImage(String userId) {</span>
+        <span class="s1">Request request = </span><span class="s0">new </span><span class="s1">Request.Builder().url(</span><span class="s4">&quot;https://api.spotify.com/v1/users/&quot; </span><span class="s1">+ userId)</span>
+                <span class="s1">.header(</span><span class="s4">&quot;Authorization&quot;</span><span class="s0">, </span><span class="s4">&quot;Bearer &quot; </span><span class="s1">+ sessionManager.getUserDetails().getSpotifyToken())</span>
+                <span class="s1">.build()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public int </span><span class="s1">getItemCount() {</span>
+        <span class="s0">return </span><span class="s1">posts.isEmpty() ? </span><span class="s3">0 </span><span class="s1">: posts.size()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">void </span><span class="s1">getPosts(Context cntx</span><span class="s0">,</span><span class="s1">ProgressDialog progressDialog) {</span>
+        <span class="s1">AsyncHttpClient client = </span><span class="s0">new </span><span class="s1">AsyncHttpClient()</span><span class="s0">;</span>
+        <span class="s1">client.get(</span><span class="s4">&quot;https://nameless-cliffs-25074.herokuapp.com/api/posts/friendsPosts/&quot; </span><span class="s1">+ sessionManager.getUserDetails().getId()</span>
+                <span class="s0">, new </span><span class="s1">JsonHttpResponseHandler() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onSuccess(</span><span class="s0">int </span><span class="s1">statusCode</span><span class="s0">, </span><span class="s1">Headers headers</span><span class="s0">, </span><span class="s1">JSON json) {</span>
+                        <span class="s0">try </span><span class="s1">{</span>
+                            <span class="s1">posts = Post.postFromJson(json.jsonArray)</span><span class="s0">;</span>
+                            <span class="s1">adapter.notifyDataSetChanged()</span><span class="s0">;</span>
+                            <span class="s1">Log.d(</span><span class="s4">&quot;FragmentHome&quot;</span><span class="s0">, </span><span class="s4">&quot;onSuccess: &quot; </span><span class="s1">+ posts.toString())</span><span class="s0">;</span>
+                            <span class="s1">progressDialog.dismiss()</span><span class="s0">;</span>
+                        <span class="s1">} </span><span class="s0">catch </span><span class="s1">(JSONException e) {</span>
+                            <span class="s1">e.printStackTrace()</span><span class="s0">;</span>
+                        <span class="s1">}</span>
+                    <span class="s1">}</span>
+
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onFailure(</span><span class="s0">int </span><span class="s1">statusCode</span><span class="s0">, </span><span class="s1">@Nullable Headers headers</span><span class="s0">, </span><span class="s1">String errorResponse</span><span class="s0">, </span><span class="s1">@Nullable Throwable throwable) {</span>
+                        <span class="s1">Log.d(</span><span class="s4">&quot;DEBUG&quot;</span><span class="s0">, </span><span class="s1">errorResponse)</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public static class </span><span class="s1">ViewHolder </span><span class="s0">extends </span><span class="s1">RecyclerView.ViewHolder {</span>
+
+        <span class="s1">TextView postContent</span><span class="s0">;</span>
+        <span class="s1">ImageView profileImage</span><span class="s0">;</span>
+        <span class="s1">ImageView playlistImage</span><span class="s0">;</span>
+        <span class="s1">TextView playlistName</span><span class="s0">;</span>
+
+        <span class="s0">public </span><span class="s1">ViewHolder(View view) {</span>
+            <span class="s0">super</span><span class="s1">(view)</span><span class="s0">;</span>
+            <span class="s1">postContent = view.findViewById(R.id.postContent)</span><span class="s0">;</span>
+            <span class="s1">profileImage = view.findViewById(R.id.profileImageView)</span><span class="s0">;</span>
+            <span class="s1">playlistImage = view.findViewById(R.id.playlistImageView)</span><span class="s0">;</span>
+            <span class="s1">playlistName = view.findViewById(R.id.playlistNameView)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+
+<span class="s0">class </span><span class="s1">commentAdapter </span><span class="s0">extends </span><span class="s1">RecyclerView.Adapter&lt;commentAdapter.ViewHolder&gt; {</span>
+
+    <span class="s1">Context context</span><span class="s0">;</span>
+
+    <span class="s0">public </span><span class="s1">commentAdapter(Context context) {</span>
+        <span class="s0">this</span><span class="s1">.context = context</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@NonNull</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">ViewHolder onCreateViewHolder(@NonNull ViewGroup parent</span><span class="s0">, int </span><span class="s1">viewType) {</span>
+        <span class="s1">View view = LayoutInflater.from(parent.getContext())</span>
+                <span class="s1">.inflate(R.layout.comment_adapter</span><span class="s0">, </span><span class="s1">parent</span><span class="s0">, false</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s0">return new </span><span class="s1">commentAdapter.ViewHolder(view)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onBindViewHolder(@NonNull ViewHolder holder</span><span class="s0">, int </span><span class="s1">position) {</span>
+
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public int </span><span class="s1">getItemCount() {</span>
+        <span class="s0">return </span><span class="s3">0</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public static class </span><span class="s1">ViewHolder </span><span class="s0">extends </span><span class="s1">RecyclerView.ViewHolder {</span>
+        <span class="s0">public </span><span class="s1">ViewHolder(View view) {</span>
+            <span class="s0">super</span><span class="s1">(view)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+</pre>
+</body>
+</html>

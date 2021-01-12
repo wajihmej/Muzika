@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -28,8 +29,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import okhttp3.Headers;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import tn.example.muzika.models.Post;
 import tn.example.muzika.utils.SessionManager;
@@ -97,6 +100,7 @@ class homeAdapter extends RecyclerView.Adapter<homeAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull homeAdapter.ViewHolder holder, int position) {
         holder.postContent.setText(posts.get(position).getPostContent());
+
         try {
             getPlaylistImage(posts.get(position).getPlaylistId(), holder);
         } catch (IOException | JSONException e) {
@@ -114,6 +118,7 @@ class homeAdapter extends RecyclerView.Adapter<homeAdapter.ViewHolder> {
         String url = obj.getJSONArray("images").getJSONObject(0).getString("url");
         Picasso.get().load(url).into(holder.playlistImage);
         holder.playlistName.setText(name);
+
     }
 
     private void getUserImage(String userId) {

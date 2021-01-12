@@ -1,0 +1,205 @@
+<html>
+<head>
+<title>FragmentTracks.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #808080;}
+.s4 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+FragmentTracks.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">tn.example.muzika</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.app.ProgressDialog</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.util.Log</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.LayoutInflater</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.ViewGroup</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.ImageButton</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.ImageView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.annotation.Nullable</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.fragment.app.Fragment</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.recyclerview.widget.LinearLayoutManager</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.recyclerview.widget.RecyclerView</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.codepath.asynchttpclient.AsyncHttpClient</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.codepath.asynchttpclient.RequestHeaders</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.codepath.asynchttpclient.RequestParams</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.codepath.asynchttpclient.callback.JsonHttpResponseHandler</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.spotify.android.appremote.api.ConnectionParams</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.spotify.android.appremote.api.Connector</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.spotify.android.appremote.api.SpotifyAppRemote</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.squareup.picasso.Picasso</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">okhttp3.Headers</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">tn.example.muzika.models.Track</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">tn.example.muzika.utils.SessionManager</span><span class="s0">;</span>
+
+<span class="s0">public class  </span><span class="s1">FragmentTracks </span><span class="s0">extends </span><span class="s1">Fragment {</span>
+    <span class="s1">ProgressDialog progressDialog</span><span class="s0">;</span>
+    <span class="s0">private static final </span><span class="s1">String REDIRECT_URI = </span><span class="s2">&quot;https://nameless-cliffs-25074.herokuapp.com/&quot;</span><span class="s0">;</span>
+    <span class="s0">private static final </span><span class="s1">String CLIENT_ID = </span><span class="s2">&quot;fe584e15ac8847edaa874f527f1a8436&quot;</span><span class="s0">;</span>
+    <span class="s0">public static </span><span class="s1">SpotifyAppRemote mSpotifyAppRemote</span><span class="s0">;</span>
+
+    <span class="s1">@Nullable</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">View onCreateView(@NonNull LayoutInflater inflater</span><span class="s0">, </span><span class="s1">@Nullable ViewGroup container</span><span class="s0">, </span><span class="s1">@Nullable Bundle savedInstanceState) {</span>
+
+        <span class="s1">Bundle bundle = </span><span class="s0">this</span><span class="s1">.getArguments()</span><span class="s0">;</span>
+        <span class="s1">String tracksURL = bundle.getString(</span><span class="s2">&quot;url&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">View rootView = inflater.inflate(R.layout.fragment_tracks</span><span class="s0">, </span><span class="s1">container</span><span class="s0">, false</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.tracksRecycler)</span><span class="s0">;</span>
+        <span class="s1">recyclerView.setHasFixedSize(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">recyclerView.setLayoutManager(</span><span class="s0">new </span><span class="s1">LinearLayoutManager(rootView.getContext()))</span><span class="s0">;</span>
+        <span class="s1">progressDialog = </span><span class="s0">new </span><span class="s1">ProgressDialog(</span><span class="s0">this</span><span class="s1">.getContext())</span><span class="s0">;</span>
+        <span class="s1">progressDialog.show()</span><span class="s0">;</span>
+        <span class="s1">progressDialog.setContentView(R.layout.custom_dialog)</span><span class="s0">;</span>
+        <span class="s1">progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent)</span><span class="s0">;</span>
+
+        <span class="s1">TracksAdapter adapter = </span><span class="s0">new </span><span class="s1">TracksAdapter(</span><span class="s0">this</span><span class="s1">.getContext()</span><span class="s0">,</span><span class="s1">progressDialog</span><span class="s0">,</span><span class="s1">tracksURL)</span><span class="s0">;</span>
+        <span class="s1">recyclerView.setAdapter(adapter)</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">rootView</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onStart() {</span>
+        <span class="s0">super</span><span class="s1">.onStart()</span><span class="s0">;</span>
+        <span class="s1">ConnectionParams connectionParams =</span>
+                <span class="s0">new </span><span class="s1">ConnectionParams.Builder(CLIENT_ID)</span>
+                        <span class="s1">.setRedirectUri(REDIRECT_URI)</span>
+                        <span class="s1">.showAuthView(</span><span class="s0">true</span><span class="s1">)</span>
+                        <span class="s1">.build()</span><span class="s0">;</span>
+
+        <span class="s1">SpotifyAppRemote.connect(</span><span class="s0">this</span><span class="s1">.getContext()</span><span class="s0">, </span><span class="s1">connectionParams</span><span class="s0">,</span>
+                <span class="s0">new </span><span class="s1">Connector.ConnectionListener() {</span>
+
+                    <span class="s0">public void </span><span class="s1">onConnected(SpotifyAppRemote spotifyAppRemote) {</span>
+                        <span class="s1">mSpotifyAppRemote = spotifyAppRemote</span><span class="s0">;</span>
+                        <span class="s1">Log.d(</span><span class="s2">&quot;MainActivity&quot;</span><span class="s0">, </span><span class="s2">&quot;Connected! Yay!&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+                        <span class="s3">// Now you can start interacting with App Remote</span>
+                        <span class="s1">mSpotifyAppRemote.getPlayerApi().play(</span><span class="s2">&quot;spotify:playlist:37i9dQZF1DX2sUQwD7tbmL&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+                    <span class="s1">}</span>
+
+                    <span class="s0">public void </span><span class="s1">onFailure(Throwable throwable) {</span>
+                        <span class="s1">Log.e(</span><span class="s2">&quot;MyActivity&quot;</span><span class="s0">, </span><span class="s1">throwable.getMessage()</span><span class="s0">, </span><span class="s1">throwable)</span><span class="s0">;</span>
+
+                        <span class="s3">// Something went wrong when attempting to connect! Handle errors here</span>
+                    <span class="s1">}</span>
+                <span class="s1">})</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+<span class="s1">}</span>
+
+<span class="s0">class </span><span class="s1">TracksAdapter </span><span class="s0">extends </span><span class="s1">RecyclerView.Adapter&lt;TracksAdapter.MyViewHolder&gt; </span><span class="s0">implements </span><span class="s1">Runnable {</span>
+    <span class="s0">private static </span><span class="s1">ArrayList&lt;Track&gt; tracks</span><span class="s0">;</span>
+    <span class="s1">Context context</span><span class="s0">;</span>
+    <span class="s1">TracksAdapter adapter = </span><span class="s0">this;</span>
+
+    <span class="s0">public </span><span class="s1">TracksAdapter(Context context</span><span class="s0">, </span><span class="s1">ProgressDialog progressDialog</span><span class="s0">, </span><span class="s1">String tracksURL) {</span>
+        <span class="s0">this</span><span class="s1">.context = context</span><span class="s0">;</span>
+        <span class="s1">getData(context</span><span class="s0">, </span><span class="s1">progressDialog</span><span class="s0">, </span><span class="s1">tracksURL)</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s1">@NonNull</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent</span><span class="s0">, int </span><span class="s1">viewType) {</span>
+        <span class="s1">View view = LayoutInflater.from(parent.getContext())</span>
+                <span class="s1">.inflate(R.layout.home_adapter</span><span class="s0">, </span><span class="s1">parent</span><span class="s0">, false</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s0">return new </span><span class="s1">TracksAdapter.MyViewHolder(view)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onBindViewHolder(@NonNull MyViewHolder holder</span><span class="s0">, int </span><span class="s1">position) {</span>
+        <span class="s1">holder.title.setText(tracks.get(position).getArtname())</span><span class="s0">;</span>
+        <span class="s1">holder.description.setText(tracks.get(position).getName())</span><span class="s0">;</span>
+        <span class="s1">Picasso.get().load(tracks.get(position).getImage()).into(holder.imageplaylist)</span><span class="s0">;</span>
+        <span class="s1">holder.play.setOnClickListener(v -&gt; {</span>
+            <span class="s1">Log.d(</span><span class="s2">&quot;TAG&quot;</span><span class="s0">, </span><span class="s2">&quot;salem: &quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public int </span><span class="s1">getItemCount() {</span>
+        <span class="s0">if </span><span class="s1">(tracks == </span><span class="s0">null</span><span class="s1">)</span>
+            <span class="s0">return </span><span class="s4">0</span><span class="s0">;</span>
+        <span class="s0">else</span>
+            <span class="s0">return </span><span class="s1">tracks.size()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">run() {</span>
+
+    <span class="s1">}</span>
+
+    <span class="s0">void </span><span class="s1">getData(Context cntx</span><span class="s0">, </span><span class="s1">ProgressDialog progressDialog</span><span class="s0">, </span><span class="s1">String Url) {</span>
+        <span class="s1">AsyncHttpClient client = </span><span class="s0">new </span><span class="s1">AsyncHttpClient()</span><span class="s0">;</span>
+        <span class="s1">RequestHeaders requestHeaders = </span><span class="s0">new </span><span class="s1">RequestHeaders()</span><span class="s0">;</span>
+        <span class="s1">SessionManager sessionManager = </span><span class="s0">new </span><span class="s1">SessionManager(cntx)</span><span class="s0">;</span>
+        <span class="s1">requestHeaders.put(</span><span class="s2">&quot;Authorization&quot;</span><span class="s0">, </span><span class="s2">&quot;Bearer &quot; </span><span class="s1">+ sessionManager.getUserDetails().getSpotifyToken())</span><span class="s0">;</span>
+        <span class="s1">RequestParams request = </span><span class="s0">new </span><span class="s1">RequestParams()</span><span class="s0">;</span>
+        <span class="s1">client.get(Url</span><span class="s0">, </span><span class="s1">requestHeaders</span><span class="s0">, </span><span class="s1">request</span>
+                <span class="s0">, new </span><span class="s1">JsonHttpResponseHandler() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onSuccess(</span><span class="s0">int </span><span class="s1">statusCode</span><span class="s0">, </span><span class="s1">Headers headers</span><span class="s0">, </span><span class="s1">JSON json) {</span>
+                        <span class="s1">Log.d(</span><span class="s2">&quot;Featured Fragment&quot;</span><span class="s0">, </span><span class="s1">json.toString())</span><span class="s0">;</span>
+                        <span class="s1">tracks = Track.fromJson(json.jsonObject)</span><span class="s0">;</span>
+                        <span class="s1">adapter.notifyDataSetChanged()</span><span class="s0">;</span>
+                        <span class="s1">progressDialog.dismiss()</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onFailure(</span><span class="s0">int </span><span class="s1">statusCode</span><span class="s0">, </span><span class="s1">@Nullable Headers headers</span><span class="s0">, </span><span class="s1">String errorResponse</span><span class="s0">, </span><span class="s1">@Nullable Throwable throwable) {</span>
+                        <span class="s1">Log.d(</span><span class="s2">&quot;DEBUG&quot;</span><span class="s0">, </span><span class="s1">errorResponse)</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+    <span class="s0">public class </span><span class="s1">MyViewHolder </span><span class="s0">extends </span><span class="s1">RecyclerView.ViewHolder {</span>
+        <span class="s0">private final </span><span class="s1">TextView title</span><span class="s0">;</span>
+        <span class="s0">private final </span><span class="s1">TextView description</span><span class="s0">;</span>
+        <span class="s0">private final </span><span class="s1">ImageView imageplaylist</span><span class="s0">;</span>
+        <span class="s0">private final </span><span class="s1">ImageButton play</span><span class="s0">;</span>
+
+        <span class="s0">public </span><span class="s1">MyViewHolder(@NonNull View itemView) {</span>
+            <span class="s0">super</span><span class="s1">(itemView)</span><span class="s0">;</span>
+            <span class="s1">title = (TextView) itemView.findViewById(R.id.playlistNameView)</span><span class="s0">;</span>
+            <span class="s1">description = (TextView) itemView.findViewById(R.id.descriptionTextView)</span><span class="s0">;</span>
+            <span class="s1">imageplaylist = (ImageView) itemView.findViewById(R.id.playlistImageView)</span><span class="s0">;</span>
+            <span class="s1">play= (ImageButton) itemView.findViewById(R.id.play)</span><span class="s0">;</span>
+
+        <span class="s1">}</span>
+
+        <span class="s0">public </span><span class="s1">TextView getTextView() {</span>
+            <span class="s0">return </span><span class="s1">title</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+        <span class="s0">public </span><span class="s1">TextView getDescription() {</span>
+            <span class="s0">return </span><span class="s1">description</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+    <span class="s1">}</span>
+<span class="s1">}</span></pre>
+</body>
+</html>

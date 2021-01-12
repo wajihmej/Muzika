@@ -54,7 +54,7 @@ public class user {
 
                 user User = new user();
 
-                User.setUsername(item.getString("name"));
+                User.setUsername(item.getString("username"));
                 User.setId(item.getString("id"));
                 User.setEmail(item.getString("email"));
                 finalList.add(User);

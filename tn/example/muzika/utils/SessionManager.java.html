@@ -1,0 +1,163 @@
+<html>
+<head>
+<title>SessionManager.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #629755; font-style: italic;}
+.s3 { color: #6a8759;}
+.s4 { color: #6897bb;}
+.s5 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SessionManager.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">tn.example.muzika.utils</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.SharedPreferences</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.spotify.sdk.android.authentication.LoginActivity</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">tn.example.muzika.models.user</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">SessionManager {</span>
+    <span class="s2">/**</span>
+     <span class="s2">* User name (make variable public to access from outside)</span>
+     <span class="s2">*/</span>
+    <span class="s0">public static final </span><span class="s1">String KEY_NAME = </span><span class="s3">&quot;name&quot;</span><span class="s0">;</span>
+    <span class="s2">/**</span>
+     <span class="s2">* Email address (make variable public to access from outside)</span>
+     <span class="s2">*/</span>
+    <span class="s0">public static final </span><span class="s1">String KEY_EMAIL = </span><span class="s3">&quot;email&quot;</span><span class="s0">;</span>
+
+    <span class="s0">public static final </span><span class="s1">String KEY_TOKEN = </span><span class="s3">&quot;token&quot;</span><span class="s0">;</span>
+
+    <span class="s0">public static final </span><span class="s1">String KEY_SPOTIFY = </span><span class="s3">&quot;Spotify_Token&quot;</span><span class="s0">;</span>
+    <span class="s0">public static final </span><span class="s1">String KEY_ID = </span><span class="s3">&quot;Id&quot;</span><span class="s0">;</span>
+    <span class="s2">/**</span>
+     <span class="s2">* Sharedpref file name</span>
+     <span class="s2">*/</span>
+    <span class="s0">private static final </span><span class="s1">String PREF_NAME = </span><span class="s3">&quot;Session&quot;</span><span class="s0">;</span>
+    <span class="s2">/**</span>
+     <span class="s2">* All Shared Preferences Keys</span>
+     <span class="s2">*/</span>
+    <span class="s0">private static final </span><span class="s1">String IS_LOGIN = </span><span class="s3">&quot;IsLoggedIn&quot;</span><span class="s0">;</span>
+    <span class="s0">public static boolean </span><span class="s1">isLoggedIn</span><span class="s0">;</span>
+    <span class="s2">/**</span>
+     <span class="s2">* Shared Preferences</span>
+     <span class="s2">*/</span>
+    <span class="s1">SharedPreferences pref</span><span class="s0">;</span>
+    <span class="s2">/**</span>
+     <span class="s2">* Editor for Shared preferences</span>
+     <span class="s2">*/</span>
+    <span class="s1">SharedPreferences.Editor editor</span><span class="s0">;</span>
+    <span class="s2">/**</span>
+     <span class="s2">* Context</span>
+     <span class="s2">*/</span>
+    <span class="s1">Context _context</span><span class="s0">;</span>
+    <span class="s2">/**</span>
+     <span class="s2">* Shared pref mode</span>
+     <span class="s2">*/</span>
+    <span class="s0">int </span><span class="s1">PRIVATE_MODE = </span><span class="s4">0</span><span class="s0">;</span>
+
+    <span class="s2">/**</span>
+     <span class="s2">* Constructor</span>
+     <span class="s2">*/</span>
+    <span class="s0">public </span><span class="s1">SessionManager(Context context) {</span>
+        <span class="s0">this</span><span class="s1">._context = context</span><span class="s0">;</span>
+        <span class="s1">pref = _context.getSharedPreferences(PREF_NAME</span><span class="s0">, </span><span class="s1">PRIVATE_MODE)</span><span class="s0">;</span>
+        <span class="s1">editor = pref.edit()</span><span class="s0">;</span>
+        <span class="s1">isLoggedIn = pref.getBoolean(IS_LOGIN</span><span class="s0">, false</span><span class="s1">)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s2">/**</span>
+     <span class="s2">* Create login session</span>
+     <span class="s2">*/</span>
+    <span class="s0">public void </span><span class="s1">createLoginSession(String id</span><span class="s0">, </span><span class="s1">String name</span><span class="s0">, </span><span class="s1">String email</span><span class="s0">, </span><span class="s1">String token) {</span>
+        <span class="s1">editor.putBoolean(IS_LOGIN</span><span class="s0">, true</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">editor.putString(KEY_ID</span><span class="s0">, </span><span class="s1">id)</span><span class="s0">;</span>
+        <span class="s1">editor.putString(KEY_NAME</span><span class="s0">, </span><span class="s1">name)</span><span class="s0">;</span>
+        <span class="s1">editor.putString(KEY_EMAIL</span><span class="s0">, </span><span class="s1">email)</span><span class="s0">;</span>
+        <span class="s1">editor.putString(KEY_TOKEN</span><span class="s0">, </span><span class="s1">token)</span><span class="s0">;</span>
+        <span class="s5">// commit changes</span>
+        <span class="s1">editor.commit()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s2">/**</span>
+     <span class="s2">* Get stored session data</span>
+     <span class="s2">*/</span>
+    <span class="s0">public </span><span class="s1">user getUserDetails() {</span>
+        <span class="s1">user user = </span><span class="s0">new </span><span class="s1">user()</span><span class="s0">;</span>
+
+        <span class="s1">user.setId(pref.getString(KEY_ID</span><span class="s0">, null</span><span class="s1">))</span><span class="s0">;</span>
+<span class="s5">// user name</span>
+        <span class="s1">user.setUsername(pref.getString(KEY_NAME</span><span class="s0">, null</span><span class="s1">))</span><span class="s0">;</span>
+<span class="s5">// user email id</span>
+        <span class="s1">user.setEmail(pref.getString(KEY_EMAIL</span><span class="s0">, null</span><span class="s1">))</span><span class="s0">;</span>
+<span class="s5">// return user</span>
+        <span class="s1">user.setToken(pref.getString(KEY_TOKEN</span><span class="s0">, null</span><span class="s1">))</span><span class="s0">;</span>
+
+        <span class="s1">user.setSpotifyToken(pref.getString(KEY_SPOTIFY</span><span class="s0">, null</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">user</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s2">/**</span>
+     <span class="s2">* Check login method wil check user login status</span>
+     <span class="s2">* If false it will redirect user to login page</span>
+     <span class="s2">* Else won't do anything</span>
+     <span class="s2">*/</span>
+    <span class="s0">public void </span><span class="s1">checkLogin() {</span>
+<span class="s5">// Check login status</span>
+        <span class="s0">if </span><span class="s1">(!</span><span class="s0">this</span><span class="s1">.isLoggedIn()) {</span>
+<span class="s5">// user is not logged in redirect him to Login Activity</span>
+            <span class="s1">Intent i = </span><span class="s0">new </span><span class="s1">Intent(_context</span><span class="s0">, </span><span class="s1">LoginActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+<span class="s5">// Closing all the Activities</span>
+            <span class="s1">i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)</span><span class="s0">;</span>
+<span class="s5">// Add new Flag to start new Activity</span>
+            <span class="s1">i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)</span><span class="s0">;</span>
+<span class="s5">// Staring Login Activity</span>
+            <span class="s1">_context.startActivity(i)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s2">/**</span>
+     <span class="s2">* Clear session details</span>
+     <span class="s2">*/</span>
+    <span class="s0">public void </span><span class="s1">logoutUser() {</span>
+<span class="s5">// Clearing all data from Shared Preferences</span>
+        <span class="s1">editor.clear()</span><span class="s0">;</span>
+        <span class="s1">editor.commit()</span><span class="s0">;</span>
+<span class="s5">// After logout redirect user to Loing Activity</span>
+        <span class="s1">Intent i = </span><span class="s0">new </span><span class="s1">Intent(_context</span><span class="s0">, </span><span class="s1">LoginActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+<span class="s5">// Closing all the Activities</span>
+        <span class="s1">i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)</span><span class="s0">;</span>
+<span class="s5">// Add new Flag to start new Activity</span>
+        <span class="s1">i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)</span><span class="s0">;</span>
+<span class="s5">// Staring Login Activity</span>
+        <span class="s1">_context.startActivity(i)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">setToken(String token) {</span>
+        <span class="s1">editor.putString(KEY_SPOTIFY</span><span class="s0">, </span><span class="s1">token)</span><span class="s0">;</span>
+        <span class="s1">editor.commit()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public boolean </span><span class="s1">isLoggedIn() {</span>
+        <span class="s0">return </span><span class="s1">isLoggedIn</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">setLoggedIn(</span><span class="s0">boolean </span><span class="s1">loggedIn) {</span>
+        <span class="s0">this</span><span class="s1">.isLoggedIn = loggedIn</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+<span class="s1">}</span></pre>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<html>
+<head>
+<title>MainActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #6a8759;}
+.s4 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">tn.example.muzika</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.util.Log</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.spotify.android.appremote.api.ConnectionParams</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.spotify.android.appremote.api.Connector</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.spotify.android.appremote.api.SpotifyAppRemote</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.spotify.sdk.android.authentication.AuthenticationClient</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.spotify.sdk.android.authentication.AuthenticationRequest</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.spotify.sdk.android.authentication.AuthenticationResponse</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">tn.example.muzika.utils.SessionManager</span><span class="s0">;</span>
+
+
+<span class="s0">public class </span><span class="s1">MainActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+
+
+    <span class="s0">private static final int </span><span class="s1">REQUEST_CODE = </span><span class="s2">1337</span><span class="s0">;</span>
+    <span class="s0">private static final </span><span class="s1">String REDIRECT_URI = </span><span class="s3">&quot;https://nameless-cliffs-25074.herokuapp.com/&quot;</span><span class="s0">;</span>
+    <span class="s0">private static final </span><span class="s1">String CLIENT_ID = </span><span class="s3">&quot;fe584e15ac8847edaa874f527f1a8436&quot;</span><span class="s0">;</span>
+
+    <span class="s0">public static </span><span class="s1">SpotifyAppRemote mSpotifyAppRemote</span><span class="s0">;</span>
+    <span class="s1">Context context</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">SessionManager sessionManager</span><span class="s0">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
+        <span class="s1">setContentView(R.layout.activity_main)</span><span class="s0">;</span>
+
+
+        <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(MainActivity.</span><span class="s0">this, </span><span class="s1">Login.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+        <span class="s1">finish()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+    <span class="s0">public void </span><span class="s1">getSpotifyAccessToken() {</span>
+        <span class="s1">AuthenticationRequest.Builder builder =</span>
+                <span class="s0">new </span><span class="s1">AuthenticationRequest.Builder(CLIENT_ID</span><span class="s0">, </span><span class="s1">AuthenticationResponse.Type.TOKEN</span><span class="s0">, </span><span class="s1">REDIRECT_URI)</span><span class="s0">;</span>
+
+        <span class="s1">builder.setScopes(</span><span class="s0">new </span><span class="s1">String[]{</span><span class="s3">&quot;streaming&quot;</span><span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">AuthenticationRequest request = builder.build()</span><span class="s0">;</span>
+
+        <span class="s1">AuthenticationClient.openLoginActivity(</span><span class="s0">this, </span><span class="s1">REQUEST_CODE</span><span class="s0">, </span><span class="s1">request)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">protected void </span><span class="s1">onActivityResult(</span><span class="s0">int </span><span class="s1">requestCode</span><span class="s0">, int </span><span class="s1">resultCode</span><span class="s0">, </span><span class="s1">Intent intent) {</span>
+        <span class="s0">super</span><span class="s1">.onActivityResult(requestCode</span><span class="s0">, </span><span class="s1">resultCode</span><span class="s0">, </span><span class="s1">intent)</span><span class="s0">;</span>
+        <span class="s1">onActivityResult(requestCode</span><span class="s0">, </span><span class="s1">resultCode</span><span class="s0">, </span><span class="s1">intent)</span><span class="s0">;</span>
+
+        <span class="s4">// Check if result comes from the correct activity</span>
+        <span class="s0">if </span><span class="s1">(requestCode == REQUEST_CODE) {</span>
+            <span class="s1">AuthenticationResponse response = AuthenticationClient.getResponse(resultCode</span><span class="s0">, </span><span class="s1">intent)</span><span class="s0">;</span>
+
+            <span class="s0">switch </span><span class="s1">(response.getType()) {</span>
+                <span class="s4">// Response was successful and contains auth token</span>
+                <span class="s0">case </span><span class="s1">TOKEN:</span>
+                    <span class="s1">Log.d(</span><span class="s3">&quot;Token&quot;</span><span class="s0">, </span><span class="s1">response.getAccessToken())</span><span class="s0">;</span>
+                    <span class="s1">sessionManager.setToken(response.getAccessToken())</span><span class="s0">;</span>
+                    <span class="s4">//this.setToken(response.getAccessToken());</span>
+                    <span class="s0">break;</span>
+                <span class="s4">// Auth flow returned an error</span>
+                <span class="s0">case </span><span class="s1">ERROR:</span>
+                    <span class="s1">Log.d(</span><span class="s3">&quot;Token retrieval error&quot;</span><span class="s0">, </span><span class="s1">response.getError())</span><span class="s0">;</span>
+                    <span class="s4">// Handle error response</span>
+                    <span class="s0">break;</span>
+
+                <span class="s4">// Most likely auth flow was cancelled</span>
+                <span class="s0">default</span><span class="s1">:</span>
+                    <span class="s4">// Handle other cases</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onStart() {</span>
+        <span class="s0">super</span><span class="s1">.onStart()</span><span class="s0">;</span>
+        <span class="s1">context = getApplicationContext()</span><span class="s0">;</span>
+        <span class="s1">sessionManager = </span><span class="s0">new </span><span class="s1">SessionManager(context)</span><span class="s0">;</span>
+        <span class="s1">ConnectionParams connectionParams =</span>
+                <span class="s0">new </span><span class="s1">ConnectionParams.Builder(CLIENT_ID)</span>
+                        <span class="s1">.setRedirectUri(REDIRECT_URI)</span>
+                        <span class="s1">.showAuthView(</span><span class="s0">true</span><span class="s1">)</span>
+                        <span class="s1">.build()</span><span class="s0">;</span>
+        <span class="s0">if </span><span class="s1">(SpotifyAppRemote.isSpotifyInstalled(</span><span class="s0">this</span><span class="s1">)) {</span>
+            <span class="s1">SpotifyAppRemote.connect(</span><span class="s0">this, </span><span class="s1">connectionParams</span><span class="s0">,</span>
+                    <span class="s0">new </span><span class="s1">Connector.ConnectionListener() {</span>
+                        <span class="s1">@Override</span>
+                        <span class="s0">public void </span><span class="s1">onConnected(SpotifyAppRemote spotifyAppRemote) {</span>
+                            <span class="s1">mSpotifyAppRemote = spotifyAppRemote</span><span class="s0">;</span>
+                            <span class="s1">Log.d(</span><span class="s3">&quot;MainActivity&quot;</span><span class="s0">, </span><span class="s3">&quot;Connected! Yay!&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">}</span>
+
+                        <span class="s1">@Override</span>
+                        <span class="s0">public void </span><span class="s1">onFailure(Throwable throwable) {</span>
+                            <span class="s1">Log.e(</span><span class="s3">&quot;MainActivity&quot;</span><span class="s0">, </span><span class="s1">throwable.getMessage()</span><span class="s0">, </span><span class="s1">throwable)</span><span class="s0">;</span>
+                            <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(MainActivity.</span><span class="s0">this, </span><span class="s1">Login.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                            <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+                            <span class="s4">// Something went wrong when attempting to connect! Handle errors here</span>
+                        <span class="s1">}</span>
+                    <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onResume() {</span>
+        <span class="s0">super</span><span class="s1">.onResume()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onStop() {</span>
+        <span class="s0">super</span><span class="s1">.onStop()</span><span class="s0">;</span>
+        <span class="s1">SpotifyAppRemote.disconnect(mSpotifyAppRemote)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onPause() {</span>
+        <span class="s0">super</span><span class="s1">.onPause()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onDestroy() {</span>
+        <span class="s0">super</span><span class="s1">.onDestroy()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+<span class="s1">}</span></pre>
+</body>
+</html>

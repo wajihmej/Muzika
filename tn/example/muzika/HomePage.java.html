@@ -1,0 +1,227 @@
+<html>
+<head>
+<title>HomePage.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #6a8759;}
+.s4 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+HomePage.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">tn.example.muzika</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.app.Dialog</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.SharedPreferences</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.graphics.Color</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.graphics.drawable.ColorDrawable</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.util.Log</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.Menu</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.MenuInflater</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.MenuItem</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Button</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.fragment.app.Fragment</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.google.android.material.bottomnavigation.BottomNavigationView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.spotify.android.appremote.api.ConnectionParams</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.spotify.android.appremote.api.Connector.ConnectionListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.spotify.android.appremote.api.SpotifyAppRemote</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.spotify.sdk.android.authentication.AuthenticationClient</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.spotify.sdk.android.authentication.AuthenticationRequest</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.spotify.sdk.android.authentication.AuthenticationResponse</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">org.json.JSONException</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">tn.example.muzika.utils.SessionManager</span><span class="s0">;</span>
+
+<span class="s0">import static </span><span class="s1">tn.example.muzika.Login.FILE_NAME</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">HomePage </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+
+    <span class="s0">private static final int </span><span class="s1">REQUEST_CODE = </span><span class="s2">1337</span><span class="s0">;</span>
+        <span class="s0">private static final </span><span class="s1">String REDIRECT_URI = </span><span class="s3">&quot;https://nameless-cliffs-25074.herokuapp.com/&quot;</span><span class="s0">;</span>
+    <span class="s0">private static final </span><span class="s1">String CLIENT_ID = </span><span class="s3">&quot;fe584e15ac8847edaa874f527f1a8436&quot;</span><span class="s0">;</span>
+    <span class="s0">public static </span><span class="s1">SpotifyAppRemote mSpotifyAppRemote</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">SessionManager sessionManager</span><span class="s0">;</span>
+    <span class="s1">SharedPreferences sharedPreferences</span><span class="s0">;</span>
+    <span class="s4">//Dialog</span>
+    <span class="s1">Dialog dialog</span><span class="s0">;</span>
+
+    <span class="s0">private </span><span class="s1">BottomNavigationView.OnNavigationItemSelectedListener navListener =</span>
+            <span class="s0">new </span><span class="s1">BottomNavigationView.OnNavigationItemSelectedListener() {</span>
+                <span class="s1">@Override</span>
+                <span class="s0">public boolean </span><span class="s1">onNavigationItemSelected(@NonNull MenuItem item) {</span>
+                    <span class="s1">Fragment selectedFragment = </span><span class="s0">null;</span>
+                    <span class="s0">switch </span><span class="s1">(item.getItemId()) {</span>
+                        <span class="s0">case </span><span class="s1">R.id.nav_home:</span>
+                            <span class="s1">selectedFragment = </span><span class="s0">new </span><span class="s1">FragmentHome()</span><span class="s0">;</span>
+                            <span class="s0">break;</span>
+                        <span class="s0">case </span><span class="s1">R.id.nav_fav:</span>
+                            <span class="s1">selectedFragment = </span><span class="s0">new </span><span class="s1">FragmentFeatured()</span><span class="s0">;</span>
+                            <span class="s0">break;</span>
+                        <span class="s0">case </span><span class="s1">R.id.nav_profile:</span>
+                            <span class="s1">selectedFragment = </span><span class="s0">new </span><span class="s1">FragmentProfile()</span><span class="s0">;</span>
+                            <span class="s0">break;</span>
+                        <span class="s0">case </span><span class="s1">R.id.nav_search :</span>
+                            <span class="s1">selectedFragment = </span><span class="s0">new </span><span class="s1">FragmentSearch()</span><span class="s0">;</span>
+                            <span class="s0">break;</span>
+                    <span class="s1">}</span>
+                    <span class="s1">getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container</span><span class="s0">,</span>
+                            <span class="s1">selectedFragment).commit()</span><span class="s0">;</span>
+                    <span class="s0">return true;</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span><span class="s0">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
+        <span class="s1">setContentView(R.layout.activity_home_page)</span><span class="s0">;</span>
+        <span class="s1">sessionManager = </span><span class="s0">new </span><span class="s1">SessionManager(getApplicationContext())</span><span class="s0">;</span>
+        <span class="s1">getSpotifyAccessToken()</span><span class="s0">;</span>
+        <span class="s1">sharedPreferences = getSharedPreferences(FILE_NAME</span><span class="s0">,</span><span class="s1">MODE_PRIVATE)</span><span class="s0">;</span>
+
+        <span class="s1">Log.d(</span><span class="s3">&quot;USER LOG&quot;</span><span class="s0">, </span><span class="s1">sessionManager.getUserDetails().toString())</span><span class="s0">;</span>
+        <span class="s1">BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation)</span><span class="s0">;</span>
+        <span class="s1">bottomNav.setOnNavigationItemSelectedListener(navListener)</span><span class="s0">;</span>
+        <span class="s4">//I added this if statement to keep the selected fragment when rotating the device</span>
+
+
+
+
+        <span class="s0">if </span><span class="s1">(savedInstanceState == </span><span class="s0">null</span><span class="s1">) {</span>
+            <span class="s1">getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container</span><span class="s0">,</span>
+                    <span class="s0">new </span><span class="s1">FragmentHome()).commit()</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onStart() {</span>
+        <span class="s0">super</span><span class="s1">.onStart()</span><span class="s0">;</span>
+        <span class="s1">ConnectionParams connectionParams =</span>
+                <span class="s0">new </span><span class="s1">ConnectionParams.Builder(CLIENT_ID)</span>
+                        <span class="s1">.setRedirectUri(REDIRECT_URI)</span>
+                        <span class="s1">.showAuthView(</span><span class="s0">true</span><span class="s1">)</span>
+                        <span class="s1">.build()</span><span class="s0">;</span>
+        <span class="s0">if </span><span class="s1">(SpotifyAppRemote.isSpotifyInstalled(</span><span class="s0">this</span><span class="s1">)) {</span>
+            <span class="s1">SpotifyAppRemote.connect(</span><span class="s0">this, </span><span class="s1">connectionParams</span><span class="s0">,</span>
+                    <span class="s0">new </span><span class="s1">ConnectionListener() {</span>
+                        <span class="s1">@Override</span>
+                        <span class="s0">public void </span><span class="s1">onConnected(SpotifyAppRemote spotifyAppRemote) {</span>
+                            <span class="s1">mSpotifyAppRemote = spotifyAppRemote</span><span class="s0">;</span>
+                            <span class="s1">Log.d(</span><span class="s3">&quot;HomePage&quot;</span><span class="s0">, </span><span class="s3">&quot;Connected! Yay!&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+                        <span class="s1">}</span>
+
+                        <span class="s1">@Override</span>
+                        <span class="s0">public void </span><span class="s1">onFailure(Throwable throwable) {</span>
+                            <span class="s1">Log.d(</span><span class="s3">&quot;SpotifyApp&quot;</span><span class="s0">, </span><span class="s3">&quot;Not connected&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                            <span class="s4">// Something went wrong when attempting to connect! Handle errors here</span>
+                        <span class="s1">}</span>
+                    <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public boolean </span><span class="s1">onCreateOptionsMenu(Menu menu) {</span>
+        <span class="s1">MenuInflater inflater = getMenuInflater()</span><span class="s0">;</span>
+        <span class="s1">inflater.inflate(R.menu.top_navigation</span><span class="s0">, </span><span class="s1">menu)</span><span class="s0">;</span>
+        <span class="s0">return true;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">getSpotifyAccessToken() {</span>
+        <span class="s1">AuthenticationRequest.Builder builder =</span>
+                <span class="s0">new </span><span class="s1">AuthenticationRequest.Builder(CLIENT_ID</span><span class="s0">, </span><span class="s1">AuthenticationResponse.Type.TOKEN</span><span class="s0">, </span><span class="s1">REDIRECT_URI)</span><span class="s0">;</span>
+        <span class="s1">builder.setScopes(</span><span class="s0">new </span><span class="s1">String[]{</span><span class="s3">&quot;streaming&quot;</span><span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">AuthenticationRequest request = builder.build()</span><span class="s0">;</span>
+
+        <span class="s1">AuthenticationClient.openLoginActivity(</span><span class="s0">this, </span><span class="s1">REQUEST_CODE</span><span class="s0">, </span><span class="s1">request)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">protected void </span><span class="s1">onActivityResult(</span><span class="s0">int </span><span class="s1">requestCode</span><span class="s0">, int </span><span class="s1">resultCode</span><span class="s0">, </span><span class="s1">Intent intent) {</span>
+        <span class="s0">super</span><span class="s1">.onActivityResult(requestCode</span><span class="s0">, </span><span class="s1">resultCode</span><span class="s0">, </span><span class="s1">intent)</span><span class="s0">;</span>
+        <span class="s4">// Check if result comes from the correct activity</span>
+        <span class="s0">if </span><span class="s1">(requestCode == REQUEST_CODE) {</span>
+            <span class="s1">AuthenticationResponse response = AuthenticationClient.getResponse(resultCode</span><span class="s0">, </span><span class="s1">intent)</span><span class="s0">;</span>
+            <span class="s1">SharedPreferences.Editor editor</span><span class="s0">;</span>
+            <span class="s0">switch </span><span class="s1">(response.getType()) {</span>
+                <span class="s4">// Response was successful and contains auth token</span>
+                <span class="s0">case </span><span class="s1">TOKEN:</span>
+                    <span class="s1">Log.d(</span><span class="s3">&quot;Token&quot;</span><span class="s0">, </span><span class="s1">response.getAccessToken())</span><span class="s0">;</span>
+                    <span class="s1">sessionManager.setToken(response.getAccessToken())</span><span class="s0">;</span>
+                     <span class="s1">editor = sharedPreferences.edit()</span><span class="s0">;</span>
+                        <span class="s1">editor.putString(</span><span class="s3">&quot;LOGIN&quot;</span><span class="s0">,</span><span class="s1">response.getAccessToken())</span><span class="s0">;</span>
+                        <span class="s1">editor.apply()</span><span class="s0">;</span>
+                    <span class="s4">//this.setToken(response.getAccessToken());</span>
+                    <span class="s0">break;</span>
+                <span class="s4">// Auth flow returned an error</span>
+                <span class="s0">case </span><span class="s1">ERROR:</span>
+                    <span class="s1">Log.d(</span><span class="s3">&quot;Token retrieval error&quot;</span><span class="s0">, </span><span class="s1">response.getError())</span><span class="s0">;</span>
+                    <span class="s4">// Handle error response</span>
+                    <span class="s1">dialog = </span><span class="s0">new </span><span class="s1">Dialog(HomePage.</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+
+                    <span class="s1">OpenErreurDialog(response.getError())</span><span class="s0">;</span>
+
+
+                    <span class="s0">break;</span>
+
+                <span class="s4">// Most likely auth flow was cancelled</span>
+                <span class="s0">default</span><span class="s1">:</span>
+                    <span class="s4">// Handle other cases</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">Logout(MenuItem item) {</span>
+        <span class="s1">sharedPreferences.edit().clear().apply()</span><span class="s0">;</span>
+        <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(HomePage.</span><span class="s0">this,</span><span class="s1">Login.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+        <span class="s1">finish()</span><span class="s0">;</span>
+
+
+    <span class="s1">}</span>
+
+    <span class="s4">//dialog</span>
+    <span class="s0">private void </span><span class="s1">OpenErreurDialog(String errorResponse) {</span>
+        <span class="s1">dialog.setContentView(R.layout.erreur_dialog)</span><span class="s0">;</span>
+        <span class="s1">dialog.getWindow().setBackgroundDrawable(</span><span class="s0">new </span><span class="s1">ColorDrawable(Color.TRANSPARENT))</span><span class="s0">;</span>
+        <span class="s1">Button tryagain = dialog.findViewById(R.id.tryagainbutton)</span><span class="s0">;</span>
+        <span class="s1">TextView text = dialog.findViewById(R.id.Ereurtext)</span><span class="s0">;</span>
+        <span class="s1">text.setText(errorResponse)</span><span class="s0">;</span>
+        <span class="s1">tryagain.setText(</span><span class="s3">&quot;Reconnect&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s4">/* 
+        if(errorResponse.equals(&quot;{\&quot;message\&quot;:\&quot;User Not found.\&quot;}&quot;)) 
+        text.setText(&quot;User Not found.&quot;); 
+        */</span>
+        <span class="s1">tryagain.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">dialog.dismiss()</span><span class="s0">;</span>
+                <span class="s1">Toast.makeText(HomePage.</span><span class="s0">this, </span><span class="s3">&quot;OUPS!&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(HomePage.</span><span class="s0">this,</span><span class="s1">Login.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+                <span class="s1">finish()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">dialog.show()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span></pre>
+</body>
+</html>
