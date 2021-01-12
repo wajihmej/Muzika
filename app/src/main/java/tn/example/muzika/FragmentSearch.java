@@ -46,6 +46,8 @@ public class FragmentSearch extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         users = new ArrayList<>();
+        getData(getContext());
+
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.mylistresult);
         recyclerView.setHasFixedSize(true);
@@ -67,6 +69,7 @@ public class FragmentSearch extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
                 filter(s.toString());
             }
 
@@ -80,23 +83,23 @@ public class FragmentSearch extends Fragment {
     }
     private void filter(String text) {
         ArrayList<user> filteredList = new ArrayList<>();
-        getData(getContext(),text);
-        if(users != null){
+
+        if(text.isEmpty()){
+            getData(getContext());
+        }
         for (user item : users) {
             if (item.getUsername().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(item);
             }
         }
         mAdapter.filterList(filteredList);
-        }
-    }
 
-    void getData(Context cntx,String text) {
+    }
+    void getData(Context cntx) {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
-        params.put("username", text);
 
-        client.get("https://nameless-cliffs-25074.herokuapp.com/api/SearchUser/"+text
+        client.get("https://nameless-cliffs-25074.herokuapp.com/api/search/*"
                 , new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Headers headers, JSON json) {

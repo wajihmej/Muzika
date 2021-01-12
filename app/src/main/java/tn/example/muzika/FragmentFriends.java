@@ -27,6 +27,7 @@ import java.util.ArrayList;
 
 import okhttp3.Headers;
 import tn.example.muzika.models.Track;
+import tn.example.muzika.models.user;
 import tn.example.muzika.utils.SessionManager;
 
 public class FragmentFriends extends Fragment {
@@ -51,7 +52,7 @@ public class FragmentFriends extends Fragment {
 }
 
 class friendsAdapter extends RecyclerView.Adapter<friendsAdapter.MyViewHolder> implements Runnable {
-    private static ArrayList<Track> tracks;
+    private static ArrayList<user> users;
     Context context;
     friendsAdapter adapter = this;
 
@@ -65,28 +66,24 @@ class friendsAdapter extends RecyclerView.Adapter<friendsAdapter.MyViewHolder> i
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.home_adapter, parent, false);
+                .inflate(R.layout.user_adapter, parent, false);
 
         return new friendsAdapter.MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.title.setText(tracks.get(position).getArtname());
-        holder.description.setText(tracks.get(position).getName());
-        Picasso.get().load(tracks.get(position).getImage()).into(holder.imageplaylist);
-        holder.play.setOnClickListener(v -> {
-            Log.d("TAG", "salem: ");
+        holder.username.setText(users.get(position).getUsername());
+        holder.email.setText(users.get(position).getEmail());
 
-        });
     }
 
     @Override
     public int getItemCount() {
-        if (tracks == null)
+        if (users == null)
             return 0;
         else
-            return tracks.size();
+            return users.size();
     }
 
     @Override
@@ -96,16 +93,16 @@ class friendsAdapter extends RecyclerView.Adapter<friendsAdapter.MyViewHolder> i
 
     void getData(Context cntx, ProgressDialog progressDialog) {
         AsyncHttpClient client = new AsyncHttpClient();
-        RequestHeaders requestHeaders = new RequestHeaders();
+
         SessionManager sessionManager = new SessionManager(cntx);
-        requestHeaders.put("Authorization", "Bearer " + sessionManager.getUserDetails().getSpotifyToken());
-        RequestParams request = new RequestParams();
-        client.get("https://api.spotify.com/v1/me/playlists", requestHeaders, request
+        String userId = sessionManager.getUserDetails().getId();
+
+        client.get("https://nameless-cliffs-25074.herokuapp.com/api/findfriends/"+userId
                 , new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         Log.d("Featured Fragment", json.toString());
-                        tracks = Track.fromJsonFav(json.jsonObject);
+                        users = user.fromJsonget(json.jsonArray);
                         adapter.notifyDataSetChanged();
                         progressDialog.dismiss();
                     }
@@ -119,27 +116,25 @@ class friendsAdapter extends RecyclerView.Adapter<friendsAdapter.MyViewHolder> i
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        private final TextView title;
-        private final TextView description;
-        private final ImageView imageplaylist;
-        private final ImageButton play;
-
+        private final TextView email;
+        private final TextView username;
+        private final ImageButton addButton;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.playlistNameView);
-            description = (TextView) itemView.findViewById(R.id.descriptionTextView);
-            imageplaylist = (ImageView) itemView.findViewById(R.id.playlistImageView);
-            play= (ImageButton) itemView.findViewById(R.id.play);
+            username = (TextView) itemView.findViewById(R.id.user_name);
+            email = (TextView) itemView.findViewById(R.id.email);
+            ImageView img = itemView.findViewById(R.id.imageView5);
+            img.setImageResource(R.drawable.userprofile);
+            addButton = itemView.findViewById(R.id.imageButton3);
 
         }
 
         public TextView getTextView() {
-            return title;
+            return username;
         }
 
         public TextView getDescription() {
-            return description;
+            return email;
         }
-
     }
 }
